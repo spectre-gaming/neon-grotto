@@ -1129,28 +1129,30 @@ function App() {
             </button>
           ))}
           <div style={{ flex: 1 }} />
-          {/* Add game button */}
-          <button onClick={() => setShowAddPanel(true)} style={{
-            background: "transparent",
-            color: "#4cff91",
-            border: "1px solid #4cff91",
-            padding: "6px 14px", cursor: "pointer",
-            fontFamily: "inherit", fontSize: 11, letterSpacing: 1,
-            textTransform: "uppercase", marginBottom: 2, marginRight: 6,
-          }}>
-            + ADD TITLE
-          </button>
+          {/* Add game button - only show when connected */}
+          {accessToken && (
+            <button onClick={() => setShowAddPanel(true)} style={{
+              background: "transparent",
+              color: "#4cff91",
+              border: "1px solid #4cff91",
+              padding: "6px 14px", cursor: "pointer",
+              fontFamily: "inherit", fontSize: 11, letterSpacing: 1,
+              textTransform: "uppercase", marginBottom: 2, marginRight: 6,
+            }}>
+              + ADD TITLE
+            </button>
+          )}
           {/* Sync button */}
           <button onClick={() => setShowSyncPanel(true)} style={{
-            background: "transparent",
-            color: syncStatus === "synced" ? "#4cff91" : syncStatus === "error" ? "#ff4d4d" : syncStatus === "syncing" ? "#f7c948" : "#555",
-            border: `1px solid ${syncStatus === "synced" ? "#4cff91" : syncStatus === "error" ? "#ff4d4d" : "#333"}`,
+            background: accessToken && syncStatus !== "error" ? "rgba(76,255,145,0.08)" : "transparent",
+            color: syncStatus === "error" ? "#ff4d4d" : syncStatus === "syncing" ? "#f7c948" : accessToken ? "#4cff91" : "#555",
+            border: `1px solid ${syncStatus === "error" ? "#ff4d4d" : accessToken ? "#4cff91" : "#333"}`,
             padding: "6px 14px", cursor: "pointer",
             fontFamily: "inherit", fontSize: 11, letterSpacing: 1,
             textTransform: "uppercase", marginBottom: 2,
             transition: "all 0.2s",
           }}>
-            {syncStatus === "syncing" ? "⟳ SYNCING" : syncStatus === "synced" ? "✓ SYNCED" : syncStatus === "error" ? "✗ ERROR" : "☁ DRIVE"}
+            {syncStatus === "syncing" ? "⟳ SYNCING" : syncStatus === "error" ? "✗ ERROR" : accessToken ? "✓ CONNECTED" : "☁ DRIVE"}
           </button>
         </div>
 
@@ -1192,6 +1194,7 @@ function App() {
               onSave={saveEdit}
               onCancel={() => setEditingId(null)}
               onDelete={deleteGame}
+              isConnected={!!accessToken}
             />
           </>
         )}
@@ -1244,14 +1247,13 @@ function Select({ value, onChange, options }) {
   );
 }
 
-function GameList({ games, editingId, editData, setEditData, onEdit, onSave, onCancel, onDelete }) {
+function GameList({ games, editingId, editData, setEditData, onEdit, onSave, onCancel, onDelete, isConnected }) {
   if (games.length === 0) return (
     <div style={{ textAlign: "center", padding: 60, color: "#444", fontSize: 13, letterSpacing: 2 }}>
       NO TITLES FOUND
     </div>
   );
 
-  // Group by system
   const grouped = {};
   games.forEach(g => {
     if (!grouped[g.system]) grouped[g.system] = [];
@@ -1290,6 +1292,7 @@ function GameList({ games, editingId, editData, setEditData, onEdit, onSave, onC
                 onSave={() => onSave(game.id)}
                 onCancel={onCancel}
                 onDelete={() => onDelete(game.id)}
+                isConnected={isConnected}
               />
             ))}
           </div>
@@ -1299,7 +1302,7 @@ function GameList({ games, editingId, editData, setEditData, onEdit, onSave, onC
   );
 }
 
-function GameRow({ game, isEditing, editData, setEditData, onEdit, onSave, onCancel, onDelete }) {
+function GameRow({ game, isEditing, editData, setEditData, onEdit, onSave, onCancel, onDelete, isConnected }) {
   const ownerColor = OWNER_COLORS[game.owner] || "#444";
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -1358,14 +1361,14 @@ function GameRow({ game, isEditing, editData, setEditData, onEdit, onSave, onCan
 
   return (
     <div
-      onClick={onEdit}
+      onClick={isConnected ? onEdit : undefined}
       style={{
         display: "flex", alignItems: "center", gap: 10,
-        padding: "5px 10px", cursor: "pointer",
+        padding: "5px 10px", cursor: isConnected ? "pointer" : "default",
         transition: "background 0.1s",
         borderLeft: `2px solid ${game.owner ? ownerColor : "transparent"}`,
       }}
-      onMouseEnter={e => e.currentTarget.style.background = "#111"}
+      onMouseEnter={e => { if (isConnected) e.currentTarget.style.background = "#111"; }}
       onMouseLeave={e => e.currentTarget.style.background = "transparent"}
     >
       <span style={{ fontSize: 13, color: game.qty > 1 ? "#fff" : "#ccc", flex: "1 1 auto" }}>
@@ -1385,7 +1388,7 @@ function GameRow({ game, isEditing, editData, setEditData, onEdit, onSave, onCan
             {game.owner.toUpperCase()}
           </span>
         )}
-        <span style={{ fontSize: 10, color: "#333" }}>✎</span>
+        {isConnected && <span style={{ fontSize: 10, color: "#333" }}>✎</span>}
       </div>
     </div>
   );
