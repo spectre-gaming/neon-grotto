@@ -6,7 +6,6 @@
   <title>Neon Grotto Arcade Inventory</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0a0a0f; }
@@ -18,799 +17,2967 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useEffect, useMemo, useCallback } = React;
-
+  <script>
+const {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback
+} = React;
 
 // ============================================================
 // GAME DATA
 // ============================================================
 const RAW_GAMES = [
-  // ATARI
-  { system: "Atari", title: "Q-Bert", qty: 1 },
-  { system: "Atari", title: "Jungle Hunt", qty: 1 },
-  { system: "Atari", title: "Canyon Bomber", qty: 1 },
-  { system: "Atari", title: "Codebreaker", qty: 1 },
-  { system: "Atari", title: "Cookie Monster Munch", qty: 1 },
-  { system: "Atari", title: "Basketball", qty: 1 },
-  { system: "Atari", title: "Pole Position", qty: 1 },
-  { system: "Atari", title: "Plague Attack", qty: 1 },
-  { system: "Atari", title: "Sea Quest", qty: 1 },
-  { system: "Atari", title: "Kangaroo", qty: 1 },
-  { system: "Atari", title: "Indy 500", qty: 1 },
-  { system: "Atari", title: "Haunted House", qty: 1 },
-  { system: "Atari", title: "Berserk", qty: 1 },
-  { system: "Atari", title: "Centipede", qty: 1 },
-  { system: "Atari", title: "E.T.", qty: 1 },
-  { system: "Atari", title: "12 Tele-Games", qty: 1 },
-  { system: "Atari", title: "Venture", qty: 1 },
-  { system: "Atari", title: "Kaboom!", qty: 1 },
-  { system: "Atari", title: "Donkey Kong", qty: 1 },
-  { system: "Atari", title: "Combat", qty: 2 },
-  { system: "Atari", title: "Breakout", qty: 1 },
-  { system: "Atari", title: "Football", qty: 3 },
-  { system: "Atari", title: "RealSports Football", qty: 1 },
-  { system: "Atari", title: "Bowling", qty: 1 },
-  { system: "Atari", title: "Fishing Derby", qty: 1 },
-  { system: "Atari", title: "Dodge 'Em", qty: 1 },
-  { system: "Atari", title: "Dolphin", qty: 1 },
-  { system: "Atari", title: "Robot Tank", qty: 1 },
-  { system: "Atari", title: "Frogger", qty: 1 },
-  { system: "Atari", title: "Tennis", qty: 1 },
-  { system: "Atari", title: "Video Olympics", qty: 1 },
-  { system: "Atari", title: "Pitfall", qty: 2 },
-  { system: "Atari", title: "Bermuda Triangle", qty: 1 },
-  { system: "Atari", title: "Stargate", qty: 1 },
-  { system: "Atari", title: "Demons to Diamonds", qty: 1 },
-  { system: "Atari", title: "Pac-Man", qty: 1 },
-  { system: "Atari", title: "Grand Prix", qty: 1 },
-  { system: "Atari", title: "Commando Raid", qty: 1 },
-  { system: "Atari", title: "Rampage", qty: 1 },
-  { system: "Atari", title: "Night Driver", qty: 1 },
-  { system: "Atari", title: "Missile Command", qty: 1 },
-  { system: "Atari", title: "Space War", qty: 1 },
-  { system: "Atari", title: "Crystal Castles", qty: 1 },
-  { system: "Atari", title: "Maze Craze", qty: 1 },
-  { system: "Atari", title: "Baseball", qty: 1 },
-  { system: "Atari", title: "Air-Sea Battle", qty: 2 },
-  { system: "Atari", title: "Warlords", qty: 1 },
-  { system: "Atari", title: "Adventure", qty: 1 },
-  { system: "Atari", title: "Blackjack", qty: 1 },
-  { system: "Atari", title: "Defender", qty: 1 },
-  { system: "Atari", title: "Space Jockey", qty: 1 },
-  { system: "Atari", title: "Space Invaders", qty: 3 },
-  { system: "Atari", title: "Slot Racers", qty: 1 },
-  { system: "Atari", title: "Super Breakout", qty: 1 },
-  { system: "Atari", title: "Journey Escape", qty: 1 },
-  { system: "Atari", title: "Sword Quest", qty: 1 },
-  { system: "Atari", title: "Target Fun", qty: 1 },
-  { system: "Atari", title: "Skiing", qty: 1 },
-  { system: "Atari", title: "Moon Patrol", qty: 1 },
-  { system: "Atari", title: "Mouse Trap", qty: 1 },
-  { system: "Atari", title: "Phoenix", qty: 1 },
-  { system: "Atari", title: "Zaxxon", qty: 1 },
-  { system: "Atari", title: "Yar's Revenge", qty: 1 },
-  { system: "Atari", title: "Asteroids", qty: 1 },
-
-  // ODYSSEY 2
-  { system: "Odyssey 2", title: "K.C. Munchkin", qty: 1 },
-  { system: "Odyssey 2", title: "Freedom Fighters", qty: 1 },
-  { system: "Odyssey 2", title: "Baseball!", qty: 1 },
-  { system: "Odyssey 2", title: "Bowling/Basketball", qty: 1 },
-  { system: "Odyssey 2", title: "Pick Axe Pete", qty: 1 },
-  { system: "Odyssey 2", title: "Football!", qty: 2 },
-  { system: "Odyssey 2", title: "Computer Golf", qty: 1 },
-  { system: "Odyssey 2", title: "Showdown in 2100 AD", qty: 1 },
-  { system: "Odyssey 2", title: "Alien Invaders-Plus!", qty: 2 },
-  { system: "Odyssey 2", title: "Speedway/Spin-Out/Crypto-Logic", qty: 1 },
-  { system: "Odyssey 2", title: "Volleyball!", qty: 1 },
-
-  // TURBOGRAFX-16
-  { system: "TurboGrafx-16", title: "Bonk's Adventure", qty: 1 },
-  { system: "TurboGrafx-16", title: "Final Lap Twin", qty: 1 },
-  { system: "TurboGrafx-16", title: "J.J. & Jeff", qty: 1 },
-  { system: "TurboGrafx-16", title: "Legendary Axe", qty: 1 },
-  { system: "TurboGrafx-16", title: "World Court Tennis", qty: 1 },
-  { system: "TurboGrafx-16", title: "Takin' It to the Hoop", qty: 1 },
-  { system: "TurboGrafx-16", title: "Victory Run", qty: 1 },
-  { system: "TurboGrafx-16", title: "Battle Royale", qty: 1 },
-  { system: "TurboGrafx-16", title: "Dungeon Explorer", qty: 1 },
-
-  // NES
-  { system: "NES", title: "Gauntlet", qty: 1 },
-  { system: "NES", title: "Rolling Thunder", qty: 1 },
-  { system: "NES", title: "Final Fantasy", qty: 1 },
-  { system: "NES", title: "Metroid", qty: 2 },
-  { system: "NES", title: "Duck Tales", qty: 1 },
-  { system: "NES", title: "Bionic Commando", qty: 1 },
-  { system: "NES", title: "Kung Fu", qty: 1 },
-  { system: "NES", title: "Spy Hunter", qty: 1 },
-  { system: "NES", title: "Adventure Island", qty: 1 },
-  { system: "NES", title: "Adventure Island II", qty: 1 },
-  { system: "NES", title: "Tiger-Heli", qty: 1 },
-  { system: "NES", title: "Legend of Kage", qty: 1 },
-  { system: "NES", title: "Strider", qty: 1 },
-  { system: "NES", title: "Double Dragon", qty: 1 },
-  { system: "NES", title: "Double Dragon II", qty: 1 },
-  { system: "NES", title: "Double Dragon III", qty: 1 },
-  { system: "NES", title: "Terminator 2", qty: 1 },
-  { system: "NES", title: "Batman", qty: 1 },
-  { system: "NES", title: "Wolverine", qty: 1 },
-  { system: "NES", title: "Ghostbusters", qty: 1 },
-  { system: "NES", title: "Ghostbusters 2", qty: 1 },
-  { system: "NES", title: "Metal Gear", qty: 1 },
-  { system: "NES", title: "Snake's Revenge", qty: 1 },
-  { system: "NES", title: "Battle Toads", qty: 1 },
-  { system: "NES", title: "Milon's Secret Castle", qty: 1 },
-  { system: "NES", title: "Blaster Master", qty: 1 },
-  { system: "NES", title: "Blades of Steel", qty: 1 },
-  { system: "NES", title: "Gun Smoke", qty: 1 },
-  { system: "NES", title: "California Games", qty: 1 },
-  { system: "NES", title: "T&C Surf Designs", qty: 1 },
-  { system: "NES", title: "R.C. Pro-AM", qty: 1 },
-  { system: "NES", title: "Punch-Out!", qty: 1 },
-  { system: "NES", title: "Lolo", qty: 1 },
-  { system: "NES", title: "Tetris", qty: 2 },
-  { system: "NES", title: "Little Mermaid", qty: 1 },
-  { system: "NES", title: "Tecmo Bowl", qty: 2 },
-  { system: "NES", title: "Kid Icarus", qty: 1 },
-  { system: "NES", title: "Castlevania", qty: 1 },
-  { system: "NES", title: "Simon's Quest: Castlevania II", qty: 1 },
-  { system: "NES", title: "Castlevania III", qty: 1 },
-  { system: "NES", title: "Kirby's Adventure", qty: 1 },
-  { system: "NES", title: "Teenage Mutant Ninja Turtles", qty: 1 },
-  { system: "NES", title: "TMNT II: Arcade Game", qty: 1 },
-  { system: "NES", title: "TMNT III", qty: 1 },
-  { system: "NES", title: "Track & Field II", qty: 1 },
-  { system: "NES", title: "Top Gun", qty: 1 },
-  { system: "NES", title: "Gyromite", qty: 1 },
-  { system: "NES", title: "Bubble Bobble", qty: 1 },
-  { system: "NES", title: "Ghosts 'n Goblins", qty: 1 },
-  { system: "NES", title: "Chip 'n Dale Rescue Rangers", qty: 1 },
-  { system: "NES", title: "Super Spike V-Ball", qty: 1 },
-  { system: "NES", title: "Karate Kid", qty: 1 },
-  { system: "NES", title: "Marble Madness", qty: 1 },
-  { system: "NES", title: "Bucky O'Hare", qty: 1 },
-  { system: "NES", title: "Dr. Mario", qty: 1 },
-  { system: "NES", title: "Contra", qty: 1 },
-  { system: "NES", title: "Super C", qty: 1 },
-  { system: "NES", title: "Super Mario / Duck Hunt", qty: 1 },
-  { system: "NES", title: "Super Mario / Duck Hunt / World Class Track Meet", qty: 1 },
-  { system: "NES", title: "Super Mario Bros 2", qty: 1 },
-  { system: "NES", title: "Super Mario Bros 3", qty: 2 },
-  { system: "NES", title: "Faxanadu", qty: 1 },
-  { system: "NES", title: "Ninja Gaiden", qty: 1 },
-  { system: "NES", title: "Ninja Gaiden II", qty: 1 },
-  { system: "NES", title: "Legend of Zelda", qty: 2 },
-  { system: "NES", title: "Adventure of Link: Zelda II", qty: 2 },
-  { system: "NES", title: "Platoon", qty: 1 },
-  { system: "NES", title: "Excitebike", qty: 1 },
-  { system: "NES", title: "Mega Man", qty: 1 },
-  { system: "NES", title: "Mega Man 2", qty: 1 },
-  { system: "NES", title: "Rambo", qty: 1 },
-  { system: "NES", title: "Ice Climber", qty: 1 },
-  { system: "NES", title: "Spelunker", qty: 1 },
-  { system: "NES", title: "P.O.W.", qty: 1 },
-  { system: "NES", title: "StarTropics", qty: 1 },
-  { system: "NES", title: "Rad Racer", qty: 1 },
-  { system: "NES", title: "Trojan", qty: 1 },
-  { system: "NES", title: "Operation Wolf", qty: 1 },
-  { system: "NES", title: "Dodge Ball", qty: 2 },
-  { system: "NES", title: "Mega Man 3", qty: 1 },
-  { system: "NES", title: "Mega Man 4", qty: 1 },
-  { system: "NES", title: "Mega Man 5", qty: 1 },
-  { system: "NES", title: "Mega Man 6", qty: 1 },
-  { system: "NES", title: "10-Yard Fight", qty: 1 },
-  { system: "NES", title: "Rush 'n' Attack", qty: 1 },
-  { system: "NES", title: "Super Pitfall", qty: 1 },
-  { system: "NES", title: "Pro Wrestling", qty: 1 },
-  { system: "NES", title: "Shadowgate", qty: 1 },
-
-  // SNES
-  { system: "SNES", title: "Super Metroid", qty: 1 },
-  { system: "SNES", title: "Legend of Zelda: A Link to the Past", qty: 1 },
-  { system: "SNES", title: "Mega Man X", qty: 1 },
-  { system: "SNES", title: "Mega Man X2", qty: 1 },
-  { system: "SNES", title: "Mega Man X3", qty: 1 },
-  { system: "SNES", title: "Fatal Fury 2", qty: 1 },
-  { system: "SNES", title: "Dig & Spike Volleyball", qty: 1 },
-  { system: "SNES", title: "Super Caesar's Palace", qty: 1 },
-  { system: "SNES", title: "Ms. Pac-Man", qty: 1 },
-  { system: "SNES", title: "Super Battleship", qty: 1 },
-  { system: "SNES", title: "Top Gear", qty: 1 },
-  { system: "SNES", title: "NBA Jam", qty: 1 },
-  { system: "SNES", title: "Super Mario RPG", qty: 1 },
-  { system: "SNES", title: "Donkey Kong Country", qty: 1 },
-  { system: "SNES", title: "Jungle Strike", qty: 1 },
-  { system: "SNES", title: "Paperboy 2", qty: 1 },
-  { system: "SNES", title: "T2", qty: 1 },
-  { system: "SNES", title: "Space Invaders", qty: 1 },
-  { system: "SNES", title: "NHL '94", qty: 1 },
-  { system: "SNES", title: "Pac-Man 2", qty: 1 },
-  { system: "SNES", title: "Final Fantasy Mystic Quest", qty: 1 },
-  { system: "SNES", title: "Super Game Boy", qty: 1 },
-  { system: "SNES", title: "Super Mario All-Stars + Super Mario World", qty: 1 },
-  { system: "SNES", title: "Final Fantasy 4", qty: 1 },
-  { system: "SNES", title: "Final Fantasy 5", qty: 1 },
-  { system: "SNES", title: "Final Fantasy 6", qty: 1 },
-  { system: "SNES", title: "Chrono Trigger", qty: 1 },
-  { system: "SNES", title: "Star Fox", qty: 1 },
-  { system: "SNES", title: "Battle Toads / Double Dragon", qty: 1 },
-  { system: "SNES", title: "Yoshi's Island", qty: 1 },
-  { system: "SNES", title: "Jurassic Park", qty: 1 },
-  { system: "SNES", title: "Super Pinball", qty: 1 },
-  { system: "SNES", title: "Super Mario Kart", qty: 1 },
-  { system: "SNES", title: "F-Zero", qty: 1 },
-  { system: "SNES", title: "Breath of Fire", qty: 1 },
-  { system: "SNES", title: "Castlevania IV", qty: 1 },
-  { system: "SNES", title: "B.O.B.", qty: 1 },
-  { system: "SNES", title: "Mega Man 7", qty: 1 },
-  { system: "SNES", title: "Ultima: Runes of Virtue II", qty: 1 },
-  { system: "SNES", title: "Street Fighter II", qty: 1 },
-  { system: "SNES", title: "Street Fighter II Turbo", qty: 1 },
-  { system: "SNES", title: "Fatal Fury", qty: 1 },
-  { system: "SNES", title: "TMNT IV", qty: 1 },
-  { system: "SNES", title: "RoboCop vs Terminator", qty: 1 },
-  { system: "SNES", title: "Mighty Morphin Power Rangers", qty: 1 },
-  { system: "SNES", title: "Mario Paint", qty: 1 },
-  { system: "SNES", title: "Disney's Aladdin", qty: 1 },
-  { system: "SNES", title: "Sim City", qty: 1 },
-  { system: "SNES", title: "Breath of Fire II", qty: 1 },
-
-  // SEGA 32X
-  { system: "Sega 32X", title: "Star Wars Arcade", qty: 1 },
-  { system: "Sega 32X", title: "Wrestlemania Arcade Game", qty: 1 },
-
-  // SEGA CD
-  { system: "Sega CD", title: "Sonic CD", qty: 1 },
-  { system: "Sega CD", title: "Batman & Robin", qty: 1 },
-  { system: "Sega CD", title: "Sewer Shark", qty: 1 },
-
-  // SEGA GENESIS
-  { system: "Sega Genesis", title: "Altered Beast", qty: 2 },
-  { system: "Sega Genesis", title: "X-Men", qty: 1 },
-  { system: "Sega Genesis", title: "Batman Returns", qty: 1 },
-  { system: "Sega Genesis", title: "Sonic Spinball", qty: 1 },
-  { system: "Sega Genesis", title: "Madden '94", qty: 1 },
-  { system: "Sega Genesis", title: "World Championship Soccer", qty: 1 },
-  { system: "Sega Genesis", title: "Bulls vs Lakers NBA Playoffs", qty: 1 },
-  { system: "Sega Genesis", title: "Sonic the Hedgehog", qty: 1 },
-  { system: "Sega Genesis", title: "Sonic 2", qty: 1 },
-  { system: "Sega Genesis", title: "Sonic 3", qty: 1 },
-  { system: "Sega Genesis", title: "Sonic & Knuckles", qty: 1 },
-  { system: "Sega Genesis", title: "Ecco the Dolphin", qty: 1 },
-  { system: "Sega Genesis", title: "Ecco: Tides of Time", qty: 1 },
-  { system: "Sega Genesis", title: "X-Men 2: Clone Wars", qty: 1 },
-  { system: "Sega Genesis", title: "Spider-Man / X-Men: Arcade's Revenge", qty: 1 },
-  { system: "Sega Genesis", title: "Strider Returns", qty: 1 },
-  { system: "Sega Genesis", title: "ToeJam & Earl", qty: 1 },
-  { system: "Sega Genesis", title: "Mortal Kombat", qty: 1 },
-  { system: "Sega Genesis", title: "Mortal Kombat II", qty: 1 },
-  { system: "Sega Genesis", title: "Mortal Kombat 3: Ultimate", qty: 1 },
-  { system: "Sega Genesis", title: "Jurassic Park", qty: 1 },
-  { system: "Sega Genesis", title: "Aladdin", qty: 2 },
-  { system: "Sega Genesis", title: "Maximum Carnage", qty: 1 },
-  { system: "Sega Genesis", title: "Separation Anxiety", qty: 1 },
-  { system: "Sega Genesis", title: "Vector Man", qty: 1 },
-  { system: "Sega Genesis", title: "Vector Man 2", qty: 1 },
-  { system: "Sega Genesis", title: "Power Rangers the Movie", qty: 1 },
-  { system: "Sega Genesis", title: "Golden Axe", qty: 1 },
-  { system: "Sega Genesis", title: "Streets of Rage II", qty: 1 },
-  { system: "Sega Genesis", title: "Eco Squad", qty: 1 },
-  { system: "Sega Genesis", title: "Mighty Morphin Power Rangers", qty: 1 },
-  { system: "Sega Genesis", title: "Kool Chameleon", qty: 1 },
-  { system: "Sega Genesis", title: "Cap'n America & the Avengers", qty: 1 },
-  { system: "Sega Genesis", title: "Double Dragon", qty: 1 },
-  { system: "Sega Genesis", title: "Spider-Man", qty: 1 },
-  { system: "Sega Genesis", title: "Street Fighter II Championship Ed.", qty: 1 },
-  { system: "Sega Genesis", title: "Earthworm Jim", qty: 1 },
-  { system: "Sega Genesis", title: "Primal Rage", qty: 1 },
-  { system: "Sega Genesis", title: "Spider-Man (2C vs 1)", qty: 1 },
-  { system: "Sega Genesis", title: "Adventures of Batman & Robin", qty: 1 },
-  { system: "Sega Genesis", title: "Michael Jackson's Moonwalker", qty: 1 },
-
-  // GAME BOY
-  { system: "Game Boy", title: "Wild Thornberry's Rambler", qty: 1 },
-  { system: "Game Boy", title: "Final Fantasy Legend II", qty: 1 },
-  { system: "Game Boy", title: "Zelda: Oracle of Seasons", qty: 1 },
-  { system: "Game Boy", title: "Zelda: Oracle of Ages", qty: 1 },
-  { system: "Game Boy", title: "Super R.C. Pro-AM", qty: 1 },
-  { system: "Game Boy", title: "Flintstones", qty: 1 },
-  { system: "Game Boy", title: "Quest for Camelot", qty: 1 },
-  { system: "Game Boy", title: "Alleyway", qty: 1 },
-  { system: "Game Boy", title: "Zelda: Link's Awakening", qty: 1 },
-  { system: "Game Boy", title: "Metroid II", qty: 1 },
-  { system: "Game Boy", title: "Pokemon Red", qty: 1 },
-  { system: "Game Boy", title: "Pokemon Blue", qty: 1 },
-  { system: "Game Boy", title: "Pokemon Yellow", qty: 1 },
-  { system: "Game Boy", title: "Pokemon Crystal", qty: 1 },
-  { system: "Game Boy", title: "TMNT: Fall of Foot Clan", qty: 1 },
-  { system: "Game Boy", title: "Castlevania Legends", qty: 1 },
-  { system: "Game Boy", title: "Dragon Warrior", qty: 1 },
-  { system: "Game Boy", title: "Castrina", qty: 1 },
-  { system: "Game Boy", title: "Pac-Man Color Ed.", qty: 1 },
-  { system: "Game Boy", title: "Caesar's Palace", qty: 1 },
-  { system: "Game Boy", title: "Final Fantasy Legend", qty: 1 },
-  { system: "Game Boy", title: "Tetris", qty: 1 },
-  { system: "Game Boy", title: "Super Mario Land", qty: 1 },
-  { system: "Game Boy", title: "Super Mario Land II", qty: 1 },
-
-  // SEGA GAME GEAR
-  { system: "Sega Game Gear", title: "Batman Returns", qty: 1 },
-  { system: "Sega Game Gear", title: "Sonic", qty: 1 },
-  { system: "Sega Game Gear", title: "Sonic 2", qty: 1 },
-  { system: "Sega Game Gear", title: "Sonic Triple Trouble", qty: 1 },
-  { system: "Sega Game Gear", title: "Sonic Chaos", qty: 1 },
-
-  // SEGA MASTER SYSTEM
-  { system: "Sega Master System", title: "Phantasy Star", qty: 1 },
-  { system: "Sega Master System", title: "Choplifter", qty: 1 },
-  { system: "Sega Master System", title: "Wonder Boy", qty: 1 },
-  { system: "Sega Master System", title: "Wonder Boy III", qty: 1 },
-  { system: "Sega Master System", title: "Maze Hunter 3D", qty: 1 },
-  { system: "Sega Master System", title: "After Burner", qty: 1 },
-  { system: "Sega Master System", title: "Kenseiden", qty: 1 },
-
-  // SEGA MEGA DRIVE (JAPANESE)
-  { system: "Sega Mega Drive (JP)", title: "ESWAT", qty: 1 },
-  { system: "Sega Mega Drive (JP)", title: "Super Moto GP", qty: 1 },
-  { system: "Sega Mega Drive (JP)", title: "Phelios", qty: 1 },
-  { system: "Sega Mega Drive (JP)", title: "Insector-X", qty: 1 },
-  { system: "Sega Mega Drive (JP)", title: "D.J. Boy", qty: 1 },
-
-  // GAME BOY ADVANCE
-  { system: "Game Boy Advance", title: "Zelda: Four Swords", qty: 1 },
-  { system: "Game Boy Advance", title: "Zelda: Minish Cap", qty: 1 },
-  { system: "Game Boy Advance", title: "Final Fantasy I & II", qty: 1 },
-  { system: "Game Boy Advance", title: "Mega Man Zero", qty: 1 },
-  { system: "Game Boy Advance", title: "Mega Man Zero 2", qty: 1 },
-  { system: "Game Boy Advance", title: "Mega Man Zero 3", qty: 1 },
-  { system: "Game Boy Advance", title: "Mega Man Zero 4", qty: 1 },
-  { system: "Game Boy Advance", title: "Metroid Zero Mission", qty: 1 },
-  { system: "Game Boy Advance", title: "Metroid Fusion", qty: 1 },
-  { system: "Game Boy Advance", title: "Mega Man & Bass", qty: 1 },
-  { system: "Game Boy Advance", title: "Pokemon My Ass", qty: 1 },
-
-  // N64
-  { system: "N64", title: "Super Mario 64", qty: 1 },
-  { system: "N64", title: "South Park", qty: 1 },
-  { system: "N64", title: "Super Smash Bros", qty: 1 },
-  { system: "N64", title: "Pokemon Stadium", qty: 1 },
-  { system: "N64", title: "Zelda: Ocarina of Time", qty: 1 },
-  { system: "N64", title: "Zelda: Majora's Mask", qty: 1 },
-  { system: "N64", title: "Shadows of the Empire", qty: 1 },
-  { system: "N64", title: "Jet Force Gemini", qty: 1 },
-  { system: "N64", title: "Turok", qty: 1 },
-  { system: "N64", title: "Turok 2", qty: 1 },
-  { system: "N64", title: "Turok: Rage Wars", qty: 1 },
-  { system: "N64", title: "GoldenEye 007", qty: 1 },
-  { system: "N64", title: "Wheel of Fortune", qty: 1 },
-  { system: "N64", title: "Battle Tank Global Assault", qty: 1 },
-  { system: "N64", title: "San Francisco Rush", qty: 1 },
-  { system: "N64", title: "Quake", qty: 1 },
-
-  // PSP
-  { system: "PSP", title: "God of War: Chains of Olympus", qty: 1 },
-  { system: "PSP", title: "Mega Man X Maverick Hunter", qty: 1 },
-  { system: "PSP", title: "Mega Man Powered Up", qty: 1 },
-  { system: "PSP", title: "Crazy Core", qty: 1 },
-  { system: "PSP", title: "Dissidia 012", qty: 1 },
-  { system: "PSP", title: "Metal Gear Portable Ops", qty: 1 },
-  { system: "PSP", title: "Metal Gear Portable Ops Plus", qty: 1 },
-  { system: "PSP", title: "Metal Gear Peacewalker", qty: 1 },
-
-  // NINTENDO DS
-  { system: "Nintendo DS", title: "Transformers Decepticons", qty: 1 },
-  { system: "Nintendo DS", title: "Nintendogs: Lab", qty: 1 },
-  { system: "Nintendo DS", title: "Nintendogs: Dachshund", qty: 1 },
-  { system: "Nintendo DS", title: "Nintendogs: Dalmatian", qty: 1 },
-  { system: "Nintendo DS", title: "Nintendogs: Chihuahua", qty: 1 },
-  { system: "Nintendo DS", title: "Cooking Mama", qty: 1 },
-  { system: "Nintendo DS", title: "Cooking Mama 2", qty: 1 },
-  { system: "Nintendo DS", title: "Cooking Mama 3", qty: 1 },
-  { system: "Nintendo DS", title: "Gardening Mama", qty: 1 },
-  { system: "Nintendo DS", title: "Animal Crossing: Wild World", qty: 1 },
-  { system: "Nintendo DS", title: "Kingdom Hearts 358/2 Days", qty: 1 },
-  { system: "Nintendo DS", title: "Mega Man ZX", qty: 1 },
-  { system: "Nintendo DS", title: "Mega Man ZX Advent", qty: 1 },
-  { system: "Nintendo DS", title: "My Japanese Coach", qty: 1 },
-  { system: "Nintendo DS", title: "New Super Mario Bros", qty: 1 },
-  { system: "Nintendo DS", title: "Zelda: Phantom Hourglass", qty: 1 },
-  { system: "Nintendo DS", title: "Zelda: Spirit Tracks", qty: 1 },
-  { system: "Nintendo DS", title: "Hamsterz Life", qty: 1 },
-  { system: "Nintendo DS", title: "Littlest Pet Shop", qty: 1 },
-  { system: "Nintendo DS", title: "Zhu Zhu Pets: Carriages & Castles", qty: 1 },
-  { system: "Nintendo DS", title: "Sims 2 Pets", qty: 1 },
-  { system: "Nintendo DS", title: "Petz Horsez 2", qty: 1 },
-  { system: "Nintendo DS", title: "Petz Nursery 2", qty: 1 },
-  { system: "Nintendo DS", title: "My Make-Up", qty: 1 },
-  { system: "Nintendo DS", title: "Brain Age", qty: 1 },
-  { system: "Nintendo DS", title: "Brain Age 2", qty: 1 },
-  { system: "Nintendo DS", title: "Sonic Rush", qty: 1 },
-  { system: "Nintendo DS", title: "Mario Kart DS", qty: 1 },
-  { system: "Nintendo DS", title: "Final Fantasy III", qty: 1 },
-  { system: "Nintendo DS", title: "Final Fantasy IV", qty: 1 },
-  { system: "Nintendo DS", title: "Final Fantasy XII Revenant Wings", qty: 1 },
-  { system: "Nintendo DS", title: "Rhythm Heaven", qty: 1 },
-  { system: "Nintendo DS", title: "Crayola Treasure Adventure", qty: 1 },
-
-  // NINTENDO 3DS
-  { system: "Nintendo 3DS", title: "Super Mario 3D Land", qty: 1 },
-  { system: "Nintendo 3DS", title: "Metroid: Samus Returns", qty: 1 },
-  { system: "Nintendo 3DS", title: "New Super Mario Bros 2", qty: 1 },
-  { system: "Nintendo 3DS", title: "Zelda: A Link Between Worlds", qty: 1 },
-
-  // SWITCH
-  { system: "Switch", title: "Princess Peach Showtime", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Super Mario Wonder", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Yoshi's Crafted World", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Sonic Frontiers", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Luigi's Mansion 3", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Mario vs Donkey Kong", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Cooking Mama Cook Star", qty: 1, owner: "Mom" },
-  { system: "Switch", title: "Mortal Kombat 11", qty: 1 },
-  { system: "Switch", title: "Zelda: Tears of the Kingdom", qty: 2 },
-  { system: "Switch", title: "Mario Party Superstars", qty: 1 },
-  { system: "Switch", title: "Zelda: Link's Awakening", qty: 1 },
-  { system: "Switch", title: "Zelda: Echoes of Wisdom", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Just Dance 2021", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Kirby's Return to Dreamland", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Transformers Galactic Trials", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Pokemon Sword", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "FNAF Security Breach", qty: 2, owner: "Logan" },
-  { system: "Switch", title: "New Pokemon Snap", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Minecraft Story Mode", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Horse Club Adventure", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Super Smash Bros Ultimate", qty: 1 },
-  { system: "Switch", title: "Astroneer", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Animal Crossing: New Horizons", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Mega Man 11", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Zelda: Breath of the Wild", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Detective Pikachu Returns", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Sonic Forces", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Yu-Gi-Oh! Legacy of the Duelist", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Super Mario RPG", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Super Mario Odyssey", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Metroid Prime 4", qty: 1 },
-  { system: "Switch", title: "Mega Man Zero/ZX Collection", qty: 1 },
-  { system: "Switch", title: "Mario Kart 8 Deluxe", qty: 1 },
-  { system: "Switch", title: "Metroid Dread", qty: 1 },
-  { system: "Switch", title: "Rollercoaster Tycoon", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Endless Ocean Luminous", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Oregon Trail", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Minecraft", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Steven Universe: Save the Light", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Pokemon Brilliant Diamond", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Just Dance 2020", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Hello Neighbor", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Little Friends", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Pokemon Violet", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Super Mario Maker 2", qty: 1 },
-  { system: "Switch", title: "Lego Movie Videogame", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Hyrule Warriors: Age of Calamity", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Paper Mario: Origami King", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Kirby & the Forgotten Land", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Pokemon Scarlet", qty: 1, owner: "Belle" },
-  { system: "Switch", title: "Bendy & the Ink Machine", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Mario & Luigi Brothership", qty: 1, owner: "Logan" },
-  { system: "Switch", title: "Dog Man: Mission Impawsible", qty: 1, owner: "Logan" },
-
-  // ARCADE CABINETS
-  { system: "Arcade Cabinets", title: "Ms. Pac-Man", qty: 1 },
-  { system: "Arcade Cabinets", title: "Teenage Mutant Ninja Turtles (4-Player)", qty: 1 },
-  { system: "Arcade Cabinets", title: "Multicade Track Pack (60 games)", qty: 1 },
-
-  // SEGA DREAMCAST
-  { system: "Sega Dreamcast", title: "Street Fighter III 3rd Strike", qty: 1 },
-  { system: "Sega Dreamcast", title: "Alone in the Dark", qty: 1 },
-  { system: "Sega Dreamcast", title: "Shenmue", qty: 2 },
-  { system: "Sega Dreamcast", title: "Marvel vs Capcom 2", qty: 1 },
-  { system: "Sega Dreamcast", title: "Sega Rally Championship", qty: 1 },
-  { system: "Sega Dreamcast", title: "House of the Dead 2", qty: 1 },
-  { system: "Sega Dreamcast", title: "World Series Baseball 2K2", qty: 1 },
-  { system: "Sega Dreamcast", title: "Soul Calibur", qty: 1 },
-  { system: "Sega Dreamcast", title: "NHL 2K", qty: 1 },
-  { system: "Sega Dreamcast", title: "Rez", qty: 1 },
-  { system: "Sega Dreamcast", title: "Power Stone 2", qty: 1 },
-  { system: "Sega Dreamcast", title: "Jet Grind Radio", qty: 1 },
-  { system: "Sega Dreamcast", title: "NFL 2K1", qty: 2 },
-
-  // PSX
-  { system: "PSX", title: "Marvel vs Capcom", qty: 1 },
-  { system: "PSX", title: "Final Fantasy 7", qty: 1 },
-  { system: "PSX", title: "Final Fantasy 8", qty: 1 },
-  { system: "PSX", title: "Final Fantasy 9", qty: 1 },
-  { system: "PSX", title: "Final Fantasy Tactics", qty: 1 },
-  { system: "PSX", title: "Legend of Dragoon", qty: 1 },
-  { system: "PSX", title: "Thousand Arms", qty: 1 },
-  { system: "PSX", title: "Blood Omen", qty: 1 },
-  { system: "PSX", title: "Crash Bandicoot", qty: 1 },
-  { system: "PSX", title: "Castlevania: Symphony of the Night", qty: 1 },
-  { system: "PSX", title: "Breath of Fire III", qty: 1 },
-  { system: "PSX", title: "Breath of Fire IV", qty: 1 },
-  { system: "PSX", title: "Mega Man 8", qty: 1 },
-  { system: "PSX", title: "Mega Man X4", qty: 1 },
-  { system: "PSX", title: "Mega Man X5", qty: 1 },
-  { system: "PSX", title: "Mega Man X6", qty: 1 },
-  { system: "PSX", title: "Soul Reaver", qty: 1 },
-  { system: "PSX", title: "Final Fantasy Origins", qty: 1 },
-  { system: "PSX", title: "Final Fantasy Chronicles", qty: 1 },
-  { system: "PSX", title: "Final Fantasy Anthology", qty: 1 },
-  { system: "PSX", title: "Chrono Cross", qty: 1 },
-  { system: "PSX", title: "Xenogears", qty: 1 },
-  { system: "PSX", title: "Brave Fencer Musashi", qty: 1 },
-  { system: "PSX", title: "Dragon Ball GT: Final Bout", qty: 1 },
-  { system: "PSX", title: "Bushido Blade", qty: 1 },
-  { system: "PSX", title: "Tenchu", qty: 1 },
-  { system: "PSX", title: "Tenchu 2", qty: 1 },
-  { system: "PSX", title: "Armored Core", qty: 1 },
-  { system: "PSX", title: "Armored Core: Project Phantasma", qty: 1 },
-  { system: "PSX", title: "Armored Core: Master of Arena", qty: 1 },
-  { system: "PSX", title: "Mega Man Legends", qty: 1 },
-  { system: "PSX", title: "Mega Man Legends 2", qty: 1 },
-
-  // WII
-  { system: "Wii", title: "SpongeBob's Truth or Square", qty: 1 },
-  { system: "Wii", title: "Ringling Bros Greatest Show", qty: 1 },
-  { system: "Wii", title: "Elebits", qty: 1 },
-  { system: "Wii", title: "Red Steel", qty: 1 },
-  { system: "Wii", title: "DBZ: Budokai Tenkaichi 3", qty: 1 },
-  { system: "Wii", title: "Neopets Puzzle Adventure", qty: 1 },
-  { system: "Wii", title: "FF: Crystal Chronicles Echoes of Time", qty: 1 },
-  { system: "Wii", title: "Tenchu Shadow Assassins", qty: 1 },
-  { system: "Wii", title: "Super Smash Bros Brawl", qty: 1 },
-  { system: "Wii", title: "New Super Mario Bros Wii", qty: 1 },
-  { system: "Wii", title: "Zelda: Skyward Sword", qty: 1 },
-  { system: "Wii", title: "Wii Sports", qty: 2 },
-  { system: "Wii", title: "Wii Resort", qty: 1 },
-  { system: "Wii", title: "Punch-Out", qty: 1 },
-  { system: "Wii", title: "Barbie Island Princess", qty: 1 },
-  { system: "Wii", title: "Mario Kart Wii", qty: 1 },
-  { system: "Wii", title: "Excite Truck", qty: 1 },
-  { system: "Wii", title: "Metroid Other M", qty: 1 },
-  { system: "Wii", title: "Metroid Prime 3", qty: 1 },
-  { system: "Wii", title: "Super Mario Galaxy", qty: 1 },
-  { system: "Wii", title: "Super Mario Galaxy 2", qty: 1 },
-  { system: "Wii", title: "Cooking Mama Cook Off", qty: 1 },
-
-  // DIGITAL — WII
-  { system: "Wii", title: "Super Mario Bros (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Super Mario Bros 2 (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Super Mario Bros 3 (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Super Mario World (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Super Metroid (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Mega Man 10 (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Pac-Man (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Sonic (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Sonic 3 (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Legend of Zelda (Digital)", qty: 1, format: "Digital" },
-  { system: "Wii", title: "Mega Man 9 (Digital)", qty: 1, format: "Digital" },
-
-  // XB360
-  { system: "XB360", title: "Kinect Adventures", qty: 1 },
-  { system: "XB360", title: "Transformers Devastation", qty: 1 },
-  { system: "XB360", title: "TF: Revenge of the Fallen", qty: 1 },
-  { system: "XB360", title: "TF: War for Cybertron", qty: 1 },
-  { system: "XB360", title: "TF: Fall of Cybertron", qty: 1 },
-  { system: "XB360", title: "Devil May Cry 4", qty: 1 },
-  { system: "XB360", title: "Ninja Gaiden II", qty: 1 },
-  { system: "XB360", title: "Ninja Gaiden III", qty: 1 },
-  { system: "XB360", title: "Iron Man", qty: 1 },
-  { system: "XB360", title: "Armored Core 4", qty: 1 },
-  { system: "XB360", title: "Tenchu Z", qty: 1 },
-  { system: "XB360", title: "Ultra Street Fighter 4", qty: 1 },
-  { system: "XB360", title: "Assassin's Creed", qty: 1 },
-  { system: "XB360", title: "Assassin's Creed II", qty: 1 },
-  { system: "XB360", title: "Assassin's Creed III", qty: 1 },
-  { system: "XB360", title: "Assassin's Creed IV", qty: 1 },
-  { system: "XB360", title: "Final Fantasy XIII", qty: 1 },
-  { system: "XB360", title: "Final Fantasy XIII-2", qty: 1 },
-  { system: "XB360", title: "Final Fantasy XIII-3", qty: 1 },
-  { system: "XB360", title: "Rise of the Tomb Raider", qty: 1 },
-  { system: "XB360", title: "Gears of War 2", qty: 1 },
-  { system: "XB360", title: "Spider-Man 3", qty: 1 },
-  { system: "XB360", title: "Fable 2", qty: 1 },
-  { system: "XB360", title: "Fable 3", qty: 1 },
-  { system: "XB360", title: "Metal Gear Rising", qty: 1 },
-  { system: "XB360", title: "Halo 3", qty: 1 },
-  { system: "XB360", title: "Rainbow Six Vegas", qty: 1 },
-  { system: "XB360", title: "Dead or Alive 4", qty: 1 },
-  { system: "XB360", title: "AC: Brotherhood", qty: 1 },
-  { system: "XB360", title: "AC: Revelations", qty: 1 },
-  { system: "XB360", title: "AC: Rogue", qty: 1 },
-  // Digital XB360
-  { system: "XB360", title: "Assassin's Creed Liberation (Digital)", qty: 1, format: "Digital" },
-  { system: "XB360", title: "Double Dragon Neon (Digital)", qty: 1, format: "Digital" },
-  { system: "XB360", title: "Fable II Pub Games (Digital)", qty: 1, format: "Digital" },
-  { system: "XB360", title: "Scott Pilgrim vs The World (Digital)", qty: 1, format: "Digital" },
-  { system: "XB360", title: "Street Fighter II HF (Digital)", qty: 1, format: "Digital" },
-  { system: "XB360", title: "Strider (Digital)", qty: 1, format: "Digital" },
-
-  // XBOX
-  { system: "Xbox", title: "Knights of the Old Republic", qty: 2 },
-  { system: "Xbox", title: "Mech Assault 2", qty: 1 },
-  { system: "Xbox", title: "Fable: Lost Chapters", qty: 1 },
-  { system: "Xbox", title: "Elder Scrolls III: Morrowind", qty: 1 },
-  { system: "Xbox", title: "Ninja Gaiden Black", qty: 1 },
-  { system: "Xbox", title: "Jade Empire L.E.", qty: 1 },
-  { system: "Xbox", title: "Dead or Alive 3", qty: 1 },
-  { system: "Xbox", title: "Halo", qty: 1 },
-  { system: "Xbox", title: "Halo 2", qty: 1 },
-  { system: "Xbox", title: "Gun", qty: 1 },
-
-  // GAMECUBE
-  { system: "GameCube", title: "Amazing Island", qty: 1 },
-  { system: "GameCube", title: "Super Mario Sunshine", qty: 1 },
-  { system: "GameCube", title: "Metroid Prime", qty: 1 },
-  { system: "GameCube", title: "Metroid Prime 2", qty: 1 },
-  { system: "GameCube", title: "Zelda: OoT / Master Quest", qty: 1 },
-  { system: "GameCube", title: "Zelda Collector's Edition", qty: 1 },
-  { system: "GameCube", title: "Metal Gear Solid: Twin Snakes", qty: 1 },
-  { system: "GameCube", title: "Final Fantasy Crystal Chronicles", qty: 1 },
-  { system: "GameCube", title: "Mega Man X Collection", qty: 1 },
-  { system: "GameCube", title: "Mega Man X Command Mission", qty: 1 },
-  { system: "GameCube", title: "Zelda: Wind Waker", qty: 1 },
-  { system: "GameCube", title: "Zelda: Twilight Princess", qty: 1 },
-
-  // PS2
-  { system: "PS2", title: "Dirge of Cerberus: FF7", qty: 1 },
-  { system: "PS2", title: "Final Fantasy X", qty: 1 },
-  { system: "PS2", title: "Final Fantasy X-2", qty: 1 },
-  { system: "PS2", title: "Final Fantasy XII", qty: 1 },
-  { system: "PS2", title: "Tenchu: Wrath of Heaven", qty: 1 },
-  { system: "PS2", title: "Tenchu Fatal Shadow", qty: 1 },
-  { system: "PS2", title: "Metal Gear Solid 2", qty: 1 },
-  { system: "PS2", title: "Metal Gear Solid 3 Subsistence", qty: 1 },
-  { system: "PS2", title: "Finding Nemo", qty: 1 },
-  { system: "PS2", title: "Samurai Legend Musashi", qty: 1 },
-  { system: "PS2", title: "Breath of Fire: Dragon Quarter", qty: 1 },
-  { system: "PS2", title: "Way of the Samurai 2", qty: 1 },
-  { system: "PS2", title: "Mega Man Anniversary Collection", qty: 1 },
-  { system: "PS2", title: "Mega Man X7", qty: 1 },
-  { system: "PS2", title: "Mega Man X8", qty: 1 },
-  { system: "PS2", title: "Dragon Ball Z Budokai", qty: 1 },
-  { system: "PS2", title: "Dragon Ball Z Budokai 2", qty: 1 },
-  { system: "PS2", title: "DBZ Budokai Tenkaichi", qty: 1 },
-  { system: "PS2", title: "Armored Core 2 Another Age", qty: 1 },
-  { system: "PS2", title: "Armored Core Nexus", qty: 1 },
-  { system: "PS2", title: "Sims", qty: 1 },
-  { system: "PS2", title: "Okami", qty: 1 },
-  { system: "PS2", title: "Go Diego Go! Safari Rescue", qty: 1 },
-  { system: "PS2", title: "Transformers", qty: 1 },
-  { system: "PS2", title: "Onimusha", qty: 1 },
-  { system: "PS2", title: "Onimusha 2", qty: 1 },
-  { system: "PS2", title: "Onimusha 3", qty: 1 },
-  { system: "PS2", title: "God of War", qty: 1 },
-  { system: "PS2", title: "God of War II", qty: 1 },
-  { system: "PS2", title: "Champions of Norrath", qty: 1 },
-  { system: "PS2", title: "Champions: Return to Arms", qty: 1 },
-  { system: "PS2", title: "Avatar: Burning Earth", qty: 1 },
-  { system: "PS2", title: "Grand Theft Auto III", qty: 1 },
-  { system: "PS2", title: "Harvest Moon: Save Homeland", qty: 1 },
-  { system: "PS2", title: "Summoner", qty: 1 },
-  { system: "PS2", title: "Zone of the Enders", qty: 1 },
-  { system: "PS2", title: "Zone of the Enders 2nd Runner", qty: 1 },
-  { system: "PS2", title: "Mobile Suit Gundam: Journey to Jaburo", qty: 1 },
-  { system: "PS2", title: "Drakengard", qty: 1 },
-  { system: "PS2", title: "Drakengard 2", qty: 1 },
-  { system: "PS2", title: "Castlevania: Curse of Darkness", qty: 1 },
-  { system: "PS2", title: "Devil May Cry", qty: 1 },
-  { system: "PS2", title: "Devil May Cry 2", qty: 1 },
-  { system: "PS2", title: "Devil May Cry 3", qty: 1 },
-  { system: "PS2", title: "Ico", qty: 1 },
-  { system: "PS2", title: "Shadow of the Colossus", qty: 1 },
-  { system: "PS2", title: "Soul Reaver 2", qty: 1 },
-  { system: "PS2", title: "Legacy of Kain: Defiance", qty: 1 },
-  { system: "PS2", title: "Blood Omen 2", qty: 1 },
-  { system: "PS2", title: "MK Armageddon", qty: 1 },
-  { system: "PS2", title: "MK Deception", qty: 1 },
-  { system: "PS2", title: "MK Shaolin Monks", qty: 1 },
-  { system: "PS2", title: "Orphen: Scion of Sorcery", qty: 1 },
-
-  // PS3
-  { system: "PS3", title: "Minecraft", qty: 1 },
-  { system: "PS3", title: "Mass Effect", qty: 1 },
-  { system: "PS3", title: "Mass Effect II", qty: 1 },
-  { system: "PS3", title: "Mass Effect III", qty: 1 },
-  { system: "PS3", title: "Batman Arkham Asylum", qty: 1 },
-  { system: "PS3", title: "Batman Arkham City", qty: 1 },
-  { system: "PS3", title: "Batman Arkham Origins", qty: 1 },
-  { system: "PS3", title: "God of War III", qty: 1 },
-  { system: "PS3", title: "Tomb Raider", qty: 1 },
-  { system: "PS3", title: "Metal Gear Solid 4", qty: 1 },
-  { system: "PS3", title: "Uncharted", qty: 1 },
-  { system: "PS3", title: "Uncharted 2", qty: 1 },
-  { system: "PS3", title: "Uncharted 3", qty: 1 },
-  { system: "PS3", title: "Journey (Digital)", qty: 1, format: "Digital" },
-  { system: "PS3", title: "Dead or Alive 5: Last Round (Digital)", qty: 1, format: "Digital" },
-
-  // PS4
-  { system: "PS4", title: "Overwatch", qty: 1 },
-  { system: "PS4", title: "Dead or Alive 6", qty: 1 },
-  { system: "PS4", title: "Devil May Cry 5", qty: 1 },
-  { system: "PS4", title: "Street Fighter V", qty: 1 },
-  { system: "PS4", title: "Metal Gear Solid V", qty: 1 },
-  { system: "PS4", title: "God of War", qty: 1 },
-  { system: "PS4", title: "God of War Ragnarok", qty: 1 },
-  { system: "PS4", title: "Spider-Man", qty: 1 },
-  { system: "PS4", title: "Spider-Man: Miles Morales", qty: 1 },
-  { system: "PS4", title: "Batman Arkham Knight", qty: 1 },
-  { system: "PS4", title: "AC: Chronicles", qty: 1 },
-  { system: "PS4", title: "AC: Unity", qty: 1 },
-  { system: "PS4", title: "AC: Syndicate", qty: 1 },
-  { system: "PS4", title: "Marvel Avengers", qty: 1 },
-  { system: "PS4", title: "Nier: Automata", qty: 1 },
-  { system: "PS4", title: "Shadow of the Tomb Raider", qty: 1 },
-  { system: "PS4", title: "No Man's Sky", qty: 1 },
-  { system: "PS4", title: "Kingdom Hearts: Story So Far", qty: 1 },
-  { system: "PS4", title: "Kingdom Hearts III", qty: 1 },
-  { system: "PS4", title: "Final Fantasy XV", qty: 1 },
-  { system: "PS4", title: "Dissidia NT", qty: 1 },
-  { system: "PS4", title: "Stranger of Paradise: FFO", qty: 1 },
-  { system: "PS4", title: "DBZ: Kakarot", qty: 1 },
-  { system: "PS4", title: "AC: Origins", qty: 1 },
-  { system: "PS4", title: "AC: Odyssey", qty: 1 },
-  { system: "PS4", title: "AC: Valhalla", qty: 1 },
-  { system: "PS4", title: "Elder Scrolls V: Skyrim", qty: 1 },
-  { system: "PS4", title: "Death Stranding", qty: 1 },
-  { system: "PS4", title: "Sifu", qty: 1 },
-  { system: "PS4", title: "Dragon's Crown Pro", qty: 1 },
-  { system: "PS4", title: "Journey", qty: 1 },
-  { system: "PS4", title: "Final Fantasy Type-0", qty: 1 },
-  { system: "PS4", title: "Mega Man 11", qty: 1 },
-
-  // WII U
-  { system: "Wii U", title: "Super Mario 3D World", qty: 1 },
-  { system: "Wii U", title: "Paper Mario Color Splash", qty: 1 },
-  { system: "Wii U", title: "Super Mario Maker", qty: 1 },
-  { system: "Wii U", title: "Yoshi's Woolly World", qty: 1 },
-  { system: "Wii U", title: "DKC: Tropical Freeze", qty: 1 },
-  { system: "Wii U", title: "New Super Mario U", qty: 1 },
-  { system: "Wii U", title: "Star Fox Zero", qty: 1 },
-  { system: "Wii U", title: "Zelda: Breath of the Wild", qty: 1 },
-  { system: "Wii U", title: "Minecraft Wii U", qty: 1 },
-  { system: "Wii U", title: "Captain Toad", qty: 1 },
-  { system: "Wii U", title: "Smash Bros Wii U", qty: 1 },
-
-  // PS5
-  { system: "PS5", title: "Assassin's Creed Shadows", qty: 1 },
-  { system: "PS5", title: "Metal Gear Solid Delta", qty: 1 },
-  { system: "PS5", title: "Stray", qty: 1 },
-  { system: "PS5", title: "AC: Mirage", qty: 1 },
-  { system: "PS5", title: "Armored Core VI", qty: 1 },
-  { system: "PS5", title: "DBZ Sparking Zero", qty: 1 },
-  { system: "PS5", title: "Ninja Gaiden 4", qty: 1 },
-  { system: "PS5", title: "FF7 Remake Intergrade", qty: 1 },
-  { system: "PS5", title: "FF7 Rebirth", qty: 1 },
-  { system: "PS5", title: "Final Fantasy XVI", qty: 1 },
-  { system: "PS5", title: "CoD: MW III", qty: 1 },
-  { system: "PS5", title: "Ghost of Yotei", qty: 1 },
-  { system: "PS5", title: "Final Fantasy XIV", qty: 1 },
-  { system: "PS5", title: "No Man's Sky", qty: 1 },
-  { system: "PS5", title: "Witcher III", qty: 1 },
-  { system: "PS5", title: "Spider-Man 2", qty: 1 },
-  { system: "PS5", title: "Marvel Rivals", qty: 1 },
-  { system: "PS5", title: "Black Myth: Wukong", qty: 1 },
-  { system: "PS5", title: "Ghost of Tsushima", qty: 1 },
-];
-
-const SYSTEM_ORDER = [
-  "Atari", "Odyssey 2", "TurboGrafx-16", "NES", "Sega Master System",
-  "Sega Mega Drive (JP)", "Sega Genesis", "Sega CD", "Sega 32X",
-  "Game Boy", "Sega Game Gear", "SNES", "N64", "Game Boy Advance",
-  "GameCube", "Nintendo DS", "Nintendo 3DS", "Switch",
-  "PSX", "PS2", "PS3", "PS4", "PS5",
-  "PSP", "Sega Dreamcast", "Xbox", "XB360", "Wii", "Wii U",
-  "Arcade Cabinets"
-];
-
+// ATARI
+{
+  system: "Atari",
+  title: "Q-Bert",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Jungle Hunt",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Canyon Bomber",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Codebreaker",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Cookie Monster Munch",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Basketball",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Pole Position",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Plague Attack",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Sea Quest",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Kangaroo",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Indy 500",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Haunted House",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Berserk",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Centipede",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "E.T.",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "12 Tele-Games",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Venture",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Kaboom!",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Donkey Kong",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Combat",
+  qty: 2
+}, {
+  system: "Atari",
+  title: "Breakout",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Football",
+  qty: 3
+}, {
+  system: "Atari",
+  title: "RealSports Football",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Bowling",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Fishing Derby",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Dodge 'Em",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Dolphin",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Robot Tank",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Frogger",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Tennis",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Video Olympics",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Pitfall",
+  qty: 2
+}, {
+  system: "Atari",
+  title: "Bermuda Triangle",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Stargate",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Demons to Diamonds",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Pac-Man",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Grand Prix",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Commando Raid",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Rampage",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Night Driver",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Missile Command",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Space War",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Crystal Castles",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Maze Craze",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Baseball",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Air-Sea Battle",
+  qty: 2
+}, {
+  system: "Atari",
+  title: "Warlords",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Adventure",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Blackjack",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Defender",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Space Jockey",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Space Invaders",
+  qty: 3
+}, {
+  system: "Atari",
+  title: "Slot Racers",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Super Breakout",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Journey Escape",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Sword Quest",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Target Fun",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Skiing",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Moon Patrol",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Mouse Trap",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Phoenix",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Zaxxon",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Yar's Revenge",
+  qty: 1
+}, {
+  system: "Atari",
+  title: "Asteroids",
+  qty: 1
+},
+// ODYSSEY 2
+{
+  system: "Odyssey 2",
+  title: "K.C. Munchkin",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Freedom Fighters",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Baseball!",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Bowling/Basketball",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Pick Axe Pete",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Football!",
+  qty: 2
+}, {
+  system: "Odyssey 2",
+  title: "Computer Golf",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Showdown in 2100 AD",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Alien Invaders-Plus!",
+  qty: 2
+}, {
+  system: "Odyssey 2",
+  title: "Speedway/Spin-Out/Crypto-Logic",
+  qty: 1
+}, {
+  system: "Odyssey 2",
+  title: "Volleyball!",
+  qty: 1
+},
+// TURBOGRAFX-16
+{
+  system: "TurboGrafx-16",
+  title: "Bonk's Adventure",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Final Lap Twin",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "J.J. & Jeff",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Legendary Axe",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "World Court Tennis",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Takin' It to the Hoop",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Victory Run",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Battle Royale",
+  qty: 1
+}, {
+  system: "TurboGrafx-16",
+  title: "Dungeon Explorer",
+  qty: 1
+},
+// NES
+{
+  system: "NES",
+  title: "Gauntlet",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Rolling Thunder",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Final Fantasy",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Metroid",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Duck Tales",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Bionic Commando",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Kung Fu",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Spy Hunter",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Adventure Island",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Adventure Island II",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Tiger-Heli",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Legend of Kage",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Strider",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Double Dragon",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Double Dragon II",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Double Dragon III",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Terminator 2",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Batman",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Wolverine",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ghostbusters",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ghostbusters 2",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Metal Gear",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Snake's Revenge",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Battle Toads",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Milon's Secret Castle",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Blaster Master",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Blades of Steel",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Gun Smoke",
+  qty: 1
+}, {
+  system: "NES",
+  title: "California Games",
+  qty: 1
+}, {
+  system: "NES",
+  title: "T&C Surf Designs",
+  qty: 1
+}, {
+  system: "NES",
+  title: "R.C. Pro-AM",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Punch-Out!",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Lolo",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Tetris",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Little Mermaid",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Tecmo Bowl",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Kid Icarus",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Castlevania",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Simon's Quest: Castlevania II",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Castlevania III",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Kirby's Adventure",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Teenage Mutant Ninja Turtles",
+  qty: 1
+}, {
+  system: "NES",
+  title: "TMNT II: Arcade Game",
+  qty: 1
+}, {
+  system: "NES",
+  title: "TMNT III",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Track & Field II",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Top Gun",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Gyromite",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Bubble Bobble",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ghosts 'n Goblins",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Chip 'n Dale Rescue Rangers",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Spike V-Ball",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Karate Kid",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Marble Madness",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Bucky O'Hare",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Dr. Mario",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Contra",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super C",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Mario / Duck Hunt",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Mario / Duck Hunt / World Class Track Meet",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Mario Bros 2",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Mario Bros 3",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Faxanadu",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ninja Gaiden",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ninja Gaiden II",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Legend of Zelda",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Adventure of Link: Zelda II",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Platoon",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Excitebike",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Mega Man",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Mega Man 2",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Rambo",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Ice Climber",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Spelunker",
+  qty: 1
+}, {
+  system: "NES",
+  title: "P.O.W.",
+  qty: 1
+}, {
+  system: "NES",
+  title: "StarTropics",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Rad Racer",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Trojan",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Operation Wolf",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Dodge Ball",
+  qty: 2
+}, {
+  system: "NES",
+  title: "Mega Man 3",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Mega Man 4",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Mega Man 5",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Mega Man 6",
+  qty: 1
+}, {
+  system: "NES",
+  title: "10-Yard Fight",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Rush 'n' Attack",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Super Pitfall",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Pro Wrestling",
+  qty: 1
+}, {
+  system: "NES",
+  title: "Shadowgate",
+  qty: 1
+},
+// SNES
+{
+  system: "SNES",
+  title: "Super Metroid",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Legend of Zelda: A Link to the Past",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mega Man X",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mega Man X2",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mega Man X3",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Fatal Fury 2",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Dig & Spike Volleyball",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Caesar's Palace",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Ms. Pac-Man",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Battleship",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Top Gear",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "NBA Jam",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Mario RPG",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Donkey Kong Country",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Jungle Strike",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Paperboy 2",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "T2",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Space Invaders",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "NHL '94",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Pac-Man 2",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Final Fantasy Mystic Quest",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Game Boy",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Mario All-Stars + Super Mario World",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Final Fantasy 4",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Final Fantasy 5",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Final Fantasy 6",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Chrono Trigger",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Star Fox",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Battle Toads / Double Dragon",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Yoshi's Island",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Jurassic Park",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Pinball",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Super Mario Kart",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "F-Zero",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Breath of Fire",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Castlevania IV",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "B.O.B.",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mega Man 7",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Ultima: Runes of Virtue II",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Street Fighter II",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Street Fighter II Turbo",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Fatal Fury",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "TMNT IV",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "RoboCop vs Terminator",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mighty Morphin Power Rangers",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Mario Paint",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Disney's Aladdin",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Sim City",
+  qty: 1
+}, {
+  system: "SNES",
+  title: "Breath of Fire II",
+  qty: 1
+},
+// SEGA 32X
+{
+  system: "Sega 32X",
+  title: "Star Wars Arcade",
+  qty: 1
+}, {
+  system: "Sega 32X",
+  title: "Wrestlemania Arcade Game",
+  qty: 1
+},
+// SEGA CD
+{
+  system: "Sega CD",
+  title: "Sonic CD",
+  qty: 1
+}, {
+  system: "Sega CD",
+  title: "Batman & Robin",
+  qty: 1
+}, {
+  system: "Sega CD",
+  title: "Sewer Shark",
+  qty: 1
+},
+// SEGA GENESIS
+{
+  system: "Sega Genesis",
+  title: "Altered Beast",
+  qty: 2
+}, {
+  system: "Sega Genesis",
+  title: "X-Men",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Batman Returns",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Sonic Spinball",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Madden '94",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "World Championship Soccer",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Bulls vs Lakers NBA Playoffs",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Sonic the Hedgehog",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Sonic 2",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Sonic 3",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Sonic & Knuckles",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Ecco the Dolphin",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Ecco: Tides of Time",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "X-Men 2: Clone Wars",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Spider-Man / X-Men: Arcade's Revenge",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Strider Returns",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "ToeJam & Earl",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Mortal Kombat",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Mortal Kombat II",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Mortal Kombat 3: Ultimate",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Jurassic Park",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Aladdin",
+  qty: 2
+}, {
+  system: "Sega Genesis",
+  title: "Maximum Carnage",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Separation Anxiety",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Vector Man",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Vector Man 2",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Power Rangers the Movie",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Golden Axe",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Streets of Rage II",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Eco Squad",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Mighty Morphin Power Rangers",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Kool Chameleon",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Cap'n America & the Avengers",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Double Dragon",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Spider-Man",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Street Fighter II Championship Ed.",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Earthworm Jim",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Primal Rage",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Spider-Man (2C vs 1)",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Adventures of Batman & Robin",
+  qty: 1
+}, {
+  system: "Sega Genesis",
+  title: "Michael Jackson's Moonwalker",
+  qty: 1
+},
+// GAME BOY
+{
+  system: "Game Boy",
+  title: "Wild Thornberry's Rambler",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Final Fantasy Legend II",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Zelda: Oracle of Seasons",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Zelda: Oracle of Ages",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Super R.C. Pro-AM",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Flintstones",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Quest for Camelot",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Alleyway",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Zelda: Link's Awakening",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Metroid II",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Pokemon Red",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Pokemon Blue",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Pokemon Yellow",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Pokemon Crystal",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "TMNT: Fall of Foot Clan",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Castlevania Legends",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Dragon Warrior",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Castrina",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Pac-Man Color Ed.",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Caesar's Palace",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Final Fantasy Legend",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Tetris",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Super Mario Land",
+  qty: 1
+}, {
+  system: "Game Boy",
+  title: "Super Mario Land II",
+  qty: 1
+},
+// SEGA GAME GEAR
+{
+  system: "Sega Game Gear",
+  title: "Batman Returns",
+  qty: 1
+}, {
+  system: "Sega Game Gear",
+  title: "Sonic",
+  qty: 1
+}, {
+  system: "Sega Game Gear",
+  title: "Sonic 2",
+  qty: 1
+}, {
+  system: "Sega Game Gear",
+  title: "Sonic Triple Trouble",
+  qty: 1
+}, {
+  system: "Sega Game Gear",
+  title: "Sonic Chaos",
+  qty: 1
+},
+// SEGA MASTER SYSTEM
+{
+  system: "Sega Master System",
+  title: "Phantasy Star",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "Choplifter",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "Wonder Boy",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "Wonder Boy III",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "Maze Hunter 3D",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "After Burner",
+  qty: 1
+}, {
+  system: "Sega Master System",
+  title: "Kenseiden",
+  qty: 1
+},
+// SEGA MEGA DRIVE (JAPANESE)
+{
+  system: "Sega Mega Drive (JP)",
+  title: "ESWAT",
+  qty: 1
+}, {
+  system: "Sega Mega Drive (JP)",
+  title: "Super Moto GP",
+  qty: 1
+}, {
+  system: "Sega Mega Drive (JP)",
+  title: "Phelios",
+  qty: 1
+}, {
+  system: "Sega Mega Drive (JP)",
+  title: "Insector-X",
+  qty: 1
+}, {
+  system: "Sega Mega Drive (JP)",
+  title: "D.J. Boy",
+  qty: 1
+},
+// GAME BOY ADVANCE
+{
+  system: "Game Boy Advance",
+  title: "Zelda: Four Swords",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Zelda: Minish Cap",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Final Fantasy I & II",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Mega Man Zero",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Mega Man Zero 2",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Mega Man Zero 3",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Mega Man Zero 4",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Metroid Zero Mission",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Metroid Fusion",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Mega Man & Bass",
+  qty: 1
+}, {
+  system: "Game Boy Advance",
+  title: "Pokemon My Ass",
+  qty: 1
+},
+// N64
+{
+  system: "N64",
+  title: "Super Mario 64",
+  qty: 1
+}, {
+  system: "N64",
+  title: "South Park",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Super Smash Bros",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Pokemon Stadium",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Zelda: Ocarina of Time",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Zelda: Majora's Mask",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Shadows of the Empire",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Jet Force Gemini",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Turok",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Turok 2",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Turok: Rage Wars",
+  qty: 1
+}, {
+  system: "N64",
+  title: "GoldenEye 007",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Wheel of Fortune",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Battle Tank Global Assault",
+  qty: 1
+}, {
+  system: "N64",
+  title: "San Francisco Rush",
+  qty: 1
+}, {
+  system: "N64",
+  title: "Quake",
+  qty: 1
+},
+// PSP
+{
+  system: "PSP",
+  title: "God of War: Chains of Olympus",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Mega Man X Maverick Hunter",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Mega Man Powered Up",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Crazy Core",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Dissidia 012",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Metal Gear Portable Ops",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Metal Gear Portable Ops Plus",
+  qty: 1
+}, {
+  system: "PSP",
+  title: "Metal Gear Peacewalker",
+  qty: 1
+},
+// NINTENDO DS
+{
+  system: "Nintendo DS",
+  title: "Transformers Decepticons",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Nintendogs: Lab",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Nintendogs: Dachshund",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Nintendogs: Dalmatian",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Nintendogs: Chihuahua",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Cooking Mama",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Cooking Mama 2",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Cooking Mama 3",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Gardening Mama",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Animal Crossing: Wild World",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Kingdom Hearts 358/2 Days",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Mega Man ZX",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Mega Man ZX Advent",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "My Japanese Coach",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "New Super Mario Bros",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Zelda: Phantom Hourglass",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Zelda: Spirit Tracks",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Hamsterz Life",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Littlest Pet Shop",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Zhu Zhu Pets: Carriages & Castles",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Sims 2 Pets",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Petz Horsez 2",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Petz Nursery 2",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "My Make-Up",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Brain Age",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Brain Age 2",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Sonic Rush",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Mario Kart DS",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Final Fantasy III",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Final Fantasy IV",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Final Fantasy XII Revenant Wings",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Rhythm Heaven",
+  qty: 1
+}, {
+  system: "Nintendo DS",
+  title: "Crayola Treasure Adventure",
+  qty: 1
+},
+// NINTENDO 3DS
+{
+  system: "Nintendo 3DS",
+  title: "Super Mario 3D Land",
+  qty: 1
+}, {
+  system: "Nintendo 3DS",
+  title: "Metroid: Samus Returns",
+  qty: 1
+}, {
+  system: "Nintendo 3DS",
+  title: "New Super Mario Bros 2",
+  qty: 1
+}, {
+  system: "Nintendo 3DS",
+  title: "Zelda: A Link Between Worlds",
+  qty: 1
+},
+// SWITCH
+{
+  system: "Switch",
+  title: "Princess Peach Showtime",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Super Mario Wonder",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Yoshi's Crafted World",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Sonic Frontiers",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Luigi's Mansion 3",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Mario vs Donkey Kong",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Cooking Mama Cook Star",
+  qty: 1,
+  owner: "Mom"
+}, {
+  system: "Switch",
+  title: "Mortal Kombat 11",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Zelda: Tears of the Kingdom",
+  qty: 2
+}, {
+  system: "Switch",
+  title: "Mario Party Superstars",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Zelda: Link's Awakening",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Zelda: Echoes of Wisdom",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Just Dance 2021",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Kirby's Return to Dreamland",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Transformers Galactic Trials",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Pokemon Sword",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "FNAF Security Breach",
+  qty: 2,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "New Pokemon Snap",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Minecraft Story Mode",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Horse Club Adventure",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Super Smash Bros Ultimate",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Astroneer",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Animal Crossing: New Horizons",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Mega Man 11",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Zelda: Breath of the Wild",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Detective Pikachu Returns",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Sonic Forces",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Yu-Gi-Oh! Legacy of the Duelist",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Super Mario RPG",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Super Mario Odyssey",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Metroid Prime 4",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Mega Man Zero/ZX Collection",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Mario Kart 8 Deluxe",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Metroid Dread",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Rollercoaster Tycoon",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Endless Ocean Luminous",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Oregon Trail",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Minecraft",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Steven Universe: Save the Light",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Pokemon Brilliant Diamond",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Just Dance 2020",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Hello Neighbor",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Little Friends",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Pokemon Violet",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Super Mario Maker 2",
+  qty: 1
+}, {
+  system: "Switch",
+  title: "Lego Movie Videogame",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Hyrule Warriors: Age of Calamity",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Paper Mario: Origami King",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Kirby & the Forgotten Land",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Pokemon Scarlet",
+  qty: 1,
+  owner: "Belle"
+}, {
+  system: "Switch",
+  title: "Bendy & the Ink Machine",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Mario & Luigi Brothership",
+  qty: 1,
+  owner: "Logan"
+}, {
+  system: "Switch",
+  title: "Dog Man: Mission Impawsible",
+  qty: 1,
+  owner: "Logan"
+},
+// ARCADE CABINETS
+{
+  system: "Arcade Cabinets",
+  title: "Ms. Pac-Man",
+  qty: 1
+}, {
+  system: "Arcade Cabinets",
+  title: "Teenage Mutant Ninja Turtles (4-Player)",
+  qty: 1
+}, {
+  system: "Arcade Cabinets",
+  title: "Multicade Track Pack (60 games)",
+  qty: 1
+},
+// SEGA DREAMCAST
+{
+  system: "Sega Dreamcast",
+  title: "Street Fighter III 3rd Strike",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Alone in the Dark",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Shenmue",
+  qty: 2
+}, {
+  system: "Sega Dreamcast",
+  title: "Marvel vs Capcom 2",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Sega Rally Championship",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "House of the Dead 2",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "World Series Baseball 2K2",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Soul Calibur",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "NHL 2K",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Rez",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Power Stone 2",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "Jet Grind Radio",
+  qty: 1
+}, {
+  system: "Sega Dreamcast",
+  title: "NFL 2K1",
+  qty: 2
+},
+// PSX
+{
+  system: "PSX",
+  title: "Marvel vs Capcom",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy 7",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy 8",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy 9",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy Tactics",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Legend of Dragoon",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Thousand Arms",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Blood Omen",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Crash Bandicoot",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Castlevania: Symphony of the Night",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Breath of Fire III",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Breath of Fire IV",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man 8",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man X4",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man X5",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man X6",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Soul Reaver",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy Origins",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy Chronicles",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Final Fantasy Anthology",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Chrono Cross",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Xenogears",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Brave Fencer Musashi",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Dragon Ball GT: Final Bout",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Bushido Blade",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Tenchu",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Tenchu 2",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Armored Core",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Armored Core: Project Phantasma",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Armored Core: Master of Arena",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man Legends",
+  qty: 1
+}, {
+  system: "PSX",
+  title: "Mega Man Legends 2",
+  qty: 1
+},
+// WII
+{
+  system: "Wii",
+  title: "SpongeBob's Truth or Square",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Ringling Bros Greatest Show",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Elebits",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Red Steel",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "DBZ: Budokai Tenkaichi 3",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Neopets Puzzle Adventure",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "FF: Crystal Chronicles Echoes of Time",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Tenchu Shadow Assassins",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Super Smash Bros Brawl",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "New Super Mario Bros Wii",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Zelda: Skyward Sword",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Wii Sports",
+  qty: 2
+}, {
+  system: "Wii",
+  title: "Wii Resort",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Punch-Out",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Barbie Island Princess",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Mario Kart Wii",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Excite Truck",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Metroid Other M",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Metroid Prime 3",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Super Mario Galaxy",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Super Mario Galaxy 2",
+  qty: 1
+}, {
+  system: "Wii",
+  title: "Cooking Mama Cook Off",
+  qty: 1
+},
+// DIGITAL — WII
+{
+  system: "Wii",
+  title: "Super Mario Bros (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Super Mario Bros 2 (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Super Mario Bros 3 (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Super Mario World (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Super Metroid (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Mega Man 10 (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Pac-Man (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Sonic (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Sonic 3 (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Legend of Zelda (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "Wii",
+  title: "Mega Man 9 (Digital)",
+  qty: 1,
+  format: "Digital"
+},
+// XB360
+{
+  system: "XB360",
+  title: "Kinect Adventures",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Transformers Devastation",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "TF: Revenge of the Fallen",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "TF: War for Cybertron",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "TF: Fall of Cybertron",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Devil May Cry 4",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Ninja Gaiden II",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Ninja Gaiden III",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Iron Man",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Armored Core 4",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Tenchu Z",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Ultra Street Fighter 4",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Assassin's Creed",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Assassin's Creed II",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Assassin's Creed III",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Assassin's Creed IV",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Final Fantasy XIII",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Final Fantasy XIII-2",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Final Fantasy XIII-3",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Rise of the Tomb Raider",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Gears of War 2",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Spider-Man 3",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Fable 2",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Fable 3",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Metal Gear Rising",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Halo 3",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Rainbow Six Vegas",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "Dead or Alive 4",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "AC: Brotherhood",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "AC: Revelations",
+  qty: 1
+}, {
+  system: "XB360",
+  title: "AC: Rogue",
+  qty: 1
+},
+// Digital XB360
+{
+  system: "XB360",
+  title: "Assassin's Creed Liberation (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "XB360",
+  title: "Double Dragon Neon (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "XB360",
+  title: "Fable II Pub Games (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "XB360",
+  title: "Scott Pilgrim vs The World (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "XB360",
+  title: "Street Fighter II HF (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "XB360",
+  title: "Strider (Digital)",
+  qty: 1,
+  format: "Digital"
+},
+// XBOX
+{
+  system: "Xbox",
+  title: "Knights of the Old Republic",
+  qty: 2
+}, {
+  system: "Xbox",
+  title: "Mech Assault 2",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Fable: Lost Chapters",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Elder Scrolls III: Morrowind",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Ninja Gaiden Black",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Jade Empire L.E.",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Dead or Alive 3",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Halo",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Halo 2",
+  qty: 1
+}, {
+  system: "Xbox",
+  title: "Gun",
+  qty: 1
+},
+// GAMECUBE
+{
+  system: "GameCube",
+  title: "Amazing Island",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Super Mario Sunshine",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Metroid Prime",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Metroid Prime 2",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Zelda: OoT / Master Quest",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Zelda Collector's Edition",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Metal Gear Solid: Twin Snakes",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Final Fantasy Crystal Chronicles",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Mega Man X Collection",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Mega Man X Command Mission",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Zelda: Wind Waker",
+  qty: 1
+}, {
+  system: "GameCube",
+  title: "Zelda: Twilight Princess",
+  qty: 1
+},
+// PS2
+{
+  system: "PS2",
+  title: "Dirge of Cerberus: FF7",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Final Fantasy X",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Final Fantasy X-2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Final Fantasy XII",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Tenchu: Wrath of Heaven",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Tenchu Fatal Shadow",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Metal Gear Solid 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Metal Gear Solid 3 Subsistence",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Finding Nemo",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Samurai Legend Musashi",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Breath of Fire: Dragon Quarter",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Way of the Samurai 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Mega Man Anniversary Collection",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Mega Man X7",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Mega Man X8",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Dragon Ball Z Budokai",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Dragon Ball Z Budokai 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "DBZ Budokai Tenkaichi",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Armored Core 2 Another Age",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Armored Core Nexus",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Sims",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Okami",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Go Diego Go! Safari Rescue",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Transformers",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Onimusha",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Onimusha 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Onimusha 3",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "God of War",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "God of War II",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Champions of Norrath",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Champions: Return to Arms",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Avatar: Burning Earth",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Grand Theft Auto III",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Harvest Moon: Save Homeland",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Summoner",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Zone of the Enders",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Zone of the Enders 2nd Runner",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Mobile Suit Gundam: Journey to Jaburo",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Drakengard",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Drakengard 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Castlevania: Curse of Darkness",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Devil May Cry",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Devil May Cry 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Devil May Cry 3",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Ico",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Shadow of the Colossus",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Soul Reaver 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Legacy of Kain: Defiance",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Blood Omen 2",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "MK Armageddon",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "MK Deception",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "MK Shaolin Monks",
+  qty: 1
+}, {
+  system: "PS2",
+  title: "Orphen: Scion of Sorcery",
+  qty: 1
+},
+// PS3
+{
+  system: "PS3",
+  title: "Minecraft",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Mass Effect",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Mass Effect II",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Mass Effect III",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Batman Arkham Asylum",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Batman Arkham City",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Batman Arkham Origins",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "God of War III",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Tomb Raider",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Metal Gear Solid 4",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Uncharted",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Uncharted 2",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Uncharted 3",
+  qty: 1
+}, {
+  system: "PS3",
+  title: "Journey (Digital)",
+  qty: 1,
+  format: "Digital"
+}, {
+  system: "PS3",
+  title: "Dead or Alive 5: Last Round (Digital)",
+  qty: 1,
+  format: "Digital"
+},
+// PS4
+{
+  system: "PS4",
+  title: "Overwatch",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Dead or Alive 6",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Devil May Cry 5",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Street Fighter V",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Metal Gear Solid V",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "God of War",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "God of War Ragnarok",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Spider-Man",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Spider-Man: Miles Morales",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Batman Arkham Knight",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Chronicles",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Unity",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Syndicate",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Marvel Avengers",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Nier: Automata",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Shadow of the Tomb Raider",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "No Man's Sky",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Kingdom Hearts: Story So Far",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Kingdom Hearts III",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Final Fantasy XV",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Dissidia NT",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Stranger of Paradise: FFO",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "DBZ: Kakarot",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Origins",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Odyssey",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "AC: Valhalla",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Elder Scrolls V: Skyrim",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Death Stranding",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Sifu",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Dragon's Crown Pro",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Journey",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Final Fantasy Type-0",
+  qty: 1
+}, {
+  system: "PS4",
+  title: "Mega Man 11",
+  qty: 1
+},
+// WII U
+{
+  system: "Wii U",
+  title: "Super Mario 3D World",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Paper Mario Color Splash",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Super Mario Maker",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Yoshi's Woolly World",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "DKC: Tropical Freeze",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "New Super Mario U",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Star Fox Zero",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Zelda: Breath of the Wild",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Minecraft Wii U",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Captain Toad",
+  qty: 1
+}, {
+  system: "Wii U",
+  title: "Smash Bros Wii U",
+  qty: 1
+},
+// PS5
+{
+  system: "PS5",
+  title: "Assassin's Creed Shadows",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Metal Gear Solid Delta",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Stray",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "AC: Mirage",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Armored Core VI",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "DBZ Sparking Zero",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Ninja Gaiden 4",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "FF7 Remake Intergrade",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "FF7 Rebirth",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Final Fantasy XVI",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "CoD: MW III",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Ghost of Yotei",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Final Fantasy XIV",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "No Man's Sky",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Witcher III",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Spider-Man 2",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Marvel Rivals",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Black Myth: Wukong",
+  qty: 1
+}, {
+  system: "PS5",
+  title: "Ghost of Tsushima",
+  qty: 1
+}];
+const SYSTEM_ORDER = ["Atari", "Odyssey 2", "TurboGrafx-16", "NES", "Sega Master System", "Sega Mega Drive (JP)", "Sega Genesis", "Sega CD", "Sega 32X", "Game Boy", "Sega Game Gear", "SNES", "N64", "Game Boy Advance", "GameCube", "Nintendo DS", "Nintendo 3DS", "Switch", "PSX", "PS2", "PS3", "PS4", "PS5", "PSP", "Sega Dreamcast", "Xbox", "XB360", "Wii", "Wii U", "Arcade Cabinets"];
 const OWNER_COLORS = {
   "Big Boss": "#ff6b35",
   "Mom": "#ff4d8d",
   "Logan": "#3da9fc",
-  "Belle": "#f7c948",
+  "Belle": "#f7c948"
 };
-
 const OWNER_LIST = ["Big Boss", "Mom", "Logan", "Belle"];
 
 // Assign IDs
@@ -818,20 +2985,20 @@ const GAMES = RAW_GAMES.map((g, i) => ({
   id: i + 1,
   ...g,
   owner: g.owner || "",
-  format: g.format || "",
+  format: g.format || ""
 }));
 
 // ============================================================
 // GOOGLE SHEETS INTEGRATION
 // ============================================================
 const SHEET_NAME = "NeonGrottoInventory";
-
 async function loadFromSheet(accessToken) {
   try {
-    const listRes = await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=name%3D%27${SHEET_NAME}%27%20and%20mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&fields=files(id%2Cname)`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const listRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name%3D%27${SHEET_NAME}%27%20and%20mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&fields=files(id%2Cname)`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
     if (!listRes.ok) {
       const err = await listRes.json().catch(() => ({}));
       throw new Error(`Drive API ${listRes.status}: ${err?.error?.message || listRes.statusText}`);
@@ -839,10 +3006,11 @@ async function loadFromSheet(accessToken) {
     const listData = await listRes.json();
     if (listData.files && listData.files.length > 0) {
       const sheetId = listData.files[0].id;
-      const dataRes = await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      const dataRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
       if (!dataRes.ok) {
         const err = await dataRes.json().catch(() => ({}));
         throw new Error(`Sheets API ${dataRes.status}: ${err?.error?.message || dataRes.statusText}`);
@@ -850,40 +3018,58 @@ async function loadFromSheet(accessToken) {
       const data = await dataRes.json();
       if (data.values && data.values.length > 1) {
         const headers = data.values[0];
-        return { sheetId, games: data.values.slice(1).map(row => {
-          const obj = {};
-          headers.forEach((h, i) => obj[h] = row[i] || "");
-          return { ...obj, id: parseInt(obj.id), qty: parseInt(obj.qty) || 1 };
-        })};
+        return {
+          sheetId,
+          games: data.values.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = row[i] || "");
+            return {
+              ...obj,
+              id: parseInt(obj.id),
+              qty: parseInt(obj.qty) || 1
+            };
+          })
+        };
       }
-      return { sheetId, games: null };
+      return {
+        sheetId,
+        games: null
+      };
     }
-    return { sheetId: null, games: null };
+    return {
+      sheetId: null,
+      games: null
+    };
   } catch (e) {
     throw e;
   }
 }
-
 async function getOrCreateFolder(accessToken, folderName, parentId = null) {
   const parentQuery = parentId ? ` and '${parentId}' in parents` : " and 'root' in parents";
-  const searchRes = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=name%3D'${encodeURIComponent(folderName)}'%20and%20mimeType%3D'application%2Fvnd.google-apps.folder'%20and%20trashed%3Dfalse${encodeURIComponent(parentQuery)}&fields=files(id%2Cname)`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+  const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name%3D'${encodeURIComponent(folderName)}'%20and%20mimeType%3D'application%2Fvnd.google-apps.folder'%20and%20trashed%3Dfalse${encodeURIComponent(parentQuery)}&fields=files(id%2Cname)`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
   const data = await searchRes.json();
   if (data.files && data.files.length > 0) return data.files[0].id;
   // Create the folder
-  const body = { name: folderName, mimeType: "application/vnd.google-apps.folder" };
+  const body = {
+    name: folderName,
+    mimeType: "application/vnd.google-apps.folder"
+  };
   if (parentId) body.parents = [parentId];
   const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(body)
   });
   const created = await createRes.json();
   return created.id;
 }
-
 async function createSheet(accessToken, games) {
   // Find or create Hobbies > Neon Grotto Arcade Inventory
   const hobbiesId = await getOrCreateFolder(accessToken, "Hobbies");
@@ -892,33 +3078,42 @@ async function createSheet(accessToken, games) {
   // Create the spreadsheet
   const createRes = await fetch("https://sheets.googleapis.com/v4/spreadsheets", {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ properties: { title: SHEET_NAME } })
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      properties: {
+        title: SHEET_NAME
+      }
+    })
   });
   const created = await createRes.json();
   const sheetId = created.spreadsheetId;
 
   // Move it into the folder (Sheets API creates in root by default)
-  await fetch(
-    `https://www.googleapis.com/drive/v3/files/${sheetId}?addParents=${folderId}&removeParents=root&fields=id`,
-    { method: "PATCH", headers: { Authorization: `Bearer ${accessToken}` } }
-  );
-
+  await fetch(`https://www.googleapis.com/drive/v3/files/${sheetId}?addParents=${folderId}&removeParents=root&fields=id`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
   await writeToSheet(accessToken, sheetId, games);
   return sheetId;
 }
-
 async function writeToSheet(accessToken, sheetId, games) {
   const headers = ["id", "system", "title", "qty", "owner", "format"];
   const values = [headers, ...games.map(g => headers.map(h => g[h] || ""))];
-  const res = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?valueInputOption=RAW`,
-    {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ values })
-    }
-  );
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?valueInputOption=RAW`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      values
+    })
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(`Sheets API ${res.status}: ${err?.error?.message || res.statusText}`);
@@ -945,7 +3140,6 @@ function App() {
   const [activeTab, setActiveTab] = useState("list"); // list | stats
 
   const [customSystems, setCustomSystems] = useState([]);
-
   const systems = useMemo(() => {
     const present = [...new Set(games.map(g => g.system))];
     const known = SYSTEM_ORDER.filter(s => present.includes(s));
@@ -953,7 +3147,6 @@ function App() {
     const newCustom = customSystems.filter(s => !present.includes(s));
     return ["All", ...known, ...extra, ...newCustom];
   }, [games, customSystems]);
-
   const allSystems = useMemo(() => {
     const present = [...new Set(games.map(g => g.system))];
     const known = SYSTEM_ORDER.filter(s => present.includes(s));
@@ -961,22 +3154,16 @@ function App() {
     const newCustom = customSystems.filter(s => !present.includes(s));
     return [...known, ...extra, ...newCustom];
   }, [games, customSystems]);
-
   const filtered = useMemo(() => {
     const results = games.filter(g => {
-      const matchSearch = g.title.toLowerCase().includes(search.toLowerCase()) ||
-                          g.system.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = g.title.toLowerCase().includes(search.toLowerCase()) || g.system.toLowerCase().includes(search.toLowerCase());
       const matchSystem = filterSystem === "All" || g.system === filterSystem;
-      const matchOwner = filterOwner === "All" || g.owner === filterOwner ||
-                         (filterOwner === "Unassigned" && !g.owner);
-      const matchFormat = filterFormat === "All" || g.format === filterFormat ||
-                          (filterFormat === "Physical" && !g.format) ||
-                          (filterFormat === "Digital" && g.format === "Digital");
+      const matchOwner = filterOwner === "All" || g.owner === filterOwner || filterOwner === "Unassigned" && !g.owner;
+      const matchFormat = filterFormat === "All" || g.format === filterFormat || filterFormat === "Physical" && !g.format || filterFormat === "Digital" && g.format === "Digital";
       return matchSearch && matchSystem && matchOwner && matchFormat;
     });
     return results.sort((a, b) => a.title.localeCompare(b.title));
   }, [games, search, filterSystem, filterOwner, filterFormat]);
-
   const stats = useMemo(() => {
     const bySystem = {};
     games.forEach(g => {
@@ -987,38 +3174,47 @@ function App() {
       total: games.reduce((s, g) => s + g.qty, 0),
       unique: games.length,
       bySystem,
-      systems: Object.keys(bySystem).length,
+      systems: Object.keys(bySystem).length
     };
   }, [games]);
-
-  const startEdit = (game) => {
+  const startEdit = game => {
     setEditingId(game.id);
-    setEditData({ title: game.title, qty: game.qty, owner: game.owner || "", format: game.format || "" });
+    setEditData({
+      title: game.title,
+      qty: game.qty,
+      owner: game.owner || "",
+      format: game.format || ""
+    });
   };
-
-  const deleteGame = useCallback((id) => {
+  const deleteGame = useCallback(id => {
     const updated = games.filter(g => g.id !== id);
     setGames(updated);
     setEditingId(null);
     if (accessToken && sheetId) syncGames(updated);
   }, [games, accessToken, sheetId]);
-
-  const addGame = useCallback((newGame) => {
+  const addGame = useCallback(newGame => {
     const maxId = games.reduce((m, g) => Math.max(m, g.id), 0);
-    const game = { id: maxId + 1, qty: 1, owner: "", format: "", ...newGame };
+    const game = {
+      id: maxId + 1,
+      qty: 1,
+      owner: "",
+      format: "",
+      ...newGame
+    };
     const updated = [...games, game];
     setGames(updated);
     if (accessToken && sheetId) syncGames(updated);
   }, [games, accessToken, sheetId]);
-
-  const saveEdit = useCallback((id) => {
-    const updated = games.map(g => g.id === id ? { ...g, ...editData } : g);
+  const saveEdit = useCallback(id => {
+    const updated = games.map(g => g.id === id ? {
+      ...g,
+      ...editData
+    } : g);
     setGames(updated);
     setEditingId(null);
     if (accessToken && sheetId) syncGames(updated);
   }, [games, editData, accessToken, sheetId]);
-
-  const syncGames = async (gameList) => {
+  const syncGames = async gameList => {
     if (!accessToken || !sheetId) return;
     setSyncStatus("syncing");
     setSyncError("");
@@ -1026,547 +3222,906 @@ function App() {
       await writeToSheet(accessToken, sheetId, gameList);
       setSyncStatus("synced");
       setTimeout(() => setSyncStatus("idle"), 2000);
-    } catch(e) {
+    } catch (e) {
       setSyncStatus("error");
       setSyncError(e.message || String(e));
     }
   };
-
-  const handleConnect = async (token) => {
+  const handleConnect = async token => {
     setAccessToken(token);
     setSyncStatus("syncing");
     setSyncError("");
     try {
-      const { sheetId: sid, games: sheetGames } = await loadFromSheet(token);
+      const {
+        sheetId: sid,
+        games: sheetGames
+      } = await loadFromSheet(token);
       if (sheetGames) {
         setGames(sheetGames);
         setSheetId(sid);
       } else {
-        const newId = sid || await createSheet(token, games);
+        const newId = sid || (await createSheet(token, games));
         if (!sid) await writeToSheet(token, newId, games);
         setSheetId(newId);
       }
       setSyncStatus("synced");
       setTimeout(() => setSyncStatus("idle"), 2000);
       setShowSyncPanel(false);
-    } catch(e) {
+    } catch (e) {
       setSyncStatus("error");
       setSyncError(e.message || String(e));
       // Keep panel open so user can see the error
     }
   };
-
-  return (
-    <div style={{
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
       minHeight: "100vh",
       background: "#0a0a0f",
       color: "#e8e0d5",
       fontFamily: "'Courier New', 'Lucida Console', monospace",
       position: "relative",
-      overflow: "hidden",
-    }}>
-      {/* Scanline overlay */}
-      <div style={{
-        position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)",
-      }} />
-
-      {/* Neon glow BG elements */}
-      <div style={{
-        position: "fixed", top: -100, left: -100, width: 400, height: 400,
-        borderRadius: "50%", background: "radial-gradient(circle, rgba(255,100,0,0.08) 0%, transparent 70%)",
-        pointerEvents: "none", zIndex: 0,
-      }} />
-      <div style={{
-        position: "fixed", bottom: -100, right: -100, width: 500, height: 500,
-        borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)",
-        pointerEvents: "none", zIndex: 0,
-      }} />
-
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 16px 80px" }}>
-
-        {/* HEADER */}
-        <div style={{ textAlign: "center", padding: "32px 0 20px" }}>
-          <div style={{
-            fontSize: 11, letterSpacing: 6, color: "#ff6b35", marginBottom: 8,
-            textTransform: "uppercase",
-          }}>
-            ▓▒░ COLLECTION DATABASE ░▒▓
-          </div>
-          <h1 style={{
-            margin: 0, fontSize: "clamp(22px, 5vw, 38px)",
-            fontWeight: 900, letterSpacing: 2,
-            textShadow: "0 0 20px rgba(255,107,53,0.6), 0 0 40px rgba(255,107,53,0.3)",
-            color: "#fff",
-            fontFamily: "'Courier New', monospace",
-          }}>
-            NEON GROTTO
-          </h1>
-          <h2 style={{
-            margin: "4px 0 0", fontSize: "clamp(12px, 2.5vw, 17px)",
-            fontWeight: 400, letterSpacing: 6, color: "#ff6b35",
-            textShadow: "0 0 10px rgba(255,107,53,0.5)",
-          }}>
-            ARCADE INVENTORY
-          </h2>
-          <div style={{ marginTop: 12, fontSize: 13, color: "#888" }}>
-            {stats.total.toLocaleString()} copies · {stats.unique} titles · {stats.systems} systems
-          </div>
-        </div>
-
-        {/* TABS */}
-        <div style={{ display: "flex", gap: 2, marginBottom: 20, borderBottom: "1px solid #222" }}>
-          {["list", "stats"].map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab)} style={{
-              background: activeTab === tab ? "#ff6b35" : "transparent",
-              color: activeTab === tab ? "#000" : "#888",
-              border: "none", padding: "8px 20px", cursor: "pointer",
-              fontFamily: "inherit", fontSize: 12, letterSpacing: 2,
-              textTransform: "uppercase", fontWeight: activeTab === tab ? 900 : 400,
-              transition: "all 0.15s",
-            }}>
-              {tab === "list" ? "▤ LIBRARY" : "▦ STATS"}
-            </button>
-          ))}
-          <div style={{ flex: 1 }} />
-          {/* Add game button - only show when connected */}
-          {accessToken && (
-            <button onClick={() => setShowAddPanel(true)} style={{
-              background: "transparent",
-              color: "#4cff91",
-              border: "1px solid #4cff91",
-              padding: "6px 14px", cursor: "pointer",
-              fontFamily: "inherit", fontSize: 11, letterSpacing: 1,
-              textTransform: "uppercase", marginBottom: 2, marginRight: 6,
-            }}>
-              + ADD TITLE
-            </button>
-          )}
-          {/* Sync button */}
-          <button onClick={() => setShowSyncPanel(true)} style={{
-            background: accessToken && syncStatus !== "error" ? "rgba(76,255,145,0.08)" : "transparent",
-            color: syncStatus === "error" ? "#ff4d4d" : syncStatus === "syncing" ? "#f7c948" : accessToken ? "#4cff91" : "#555",
-            border: `1px solid ${syncStatus === "error" ? "#ff4d4d" : accessToken ? "#4cff91" : "#333"}`,
-            padding: "6px 14px", cursor: "pointer",
-            fontFamily: "inherit", fontSize: 11, letterSpacing: 1,
-            textTransform: "uppercase", marginBottom: 2,
-            transition: "all 0.2s",
-          }}>
-            {syncStatus === "syncing" ? "⟳ SYNCING" : syncStatus === "error" ? "✗ ERROR" : accessToken ? "✓ CONNECTED" : "☁ DRIVE"}
-          </button>
-        </div>
-
-        {activeTab === "list" && (
-          <>
-            {/* FILTERS */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="SEARCH TITLES..."
-                style={{
-                  flex: "1 1 200px", background: "#111", border: "1px solid #333",
-                  color: "#e8e0d5", padding: "8px 12px", fontFamily: "inherit",
-                  fontSize: 12, letterSpacing: 1, outline: "none",
-                  boxShadow: search ? "0 0 8px rgba(255,107,53,0.3)" : "none",
-                  transition: "box-shadow 0.2s",
-                }}
-              />
-              <Select value={filterSystem} onChange={setFilterSystem} options={systems} />
-              <Select value={filterOwner} onChange={setFilterOwner}
-                options={["All", "Unassigned", ...OWNER_LIST]} />
-              <Select value={filterFormat} onChange={setFilterFormat}
-                options={["All", "Physical", "Digital"]} />
-            </div>
-
-            {/* RESULTS COUNT */}
-            <div style={{ fontSize: 11, color: "#555", marginBottom: 12, letterSpacing: 1 }}>
-              SHOWING {filtered.length} OF {games.length} TITLES
-            </div>
-
-            {/* GAME LIST */}
-            <GameList
-              games={filtered}
-              editingId={editingId}
-              editData={editData}
-              setEditData={setEditData}
-              onEdit={startEdit}
-              onSave={saveEdit}
-              onCancel={() => setEditingId(null)}
-              onDelete={deleteGame}
-              isConnected={!!accessToken}
-            />
-          </>
-        )}
-
-        {activeTab === "stats" && <StatsPanel stats={stats} games={games} />}
-      </div>
-
-      {/* SYNC PANEL MODAL */}
-      {showSyncPanel && (
-        <SyncPanel
-          onClose={() => setShowSyncPanel(false)}
-          onConnect={handleConnect}
-          isConnected={!!accessToken}
-          sheetId={sheetId}
-          syncStatus={syncStatus}
-          syncError={syncError}
-        />
-      )}
-
-      {/* ADD GAME MODAL */}
-      {showAddPanel && (
-        <AddGamePanel
-          systems={allSystems}
-          onClose={() => setShowAddPanel(false)}
-          onAdd={(g, newSystem) => {
-            if (newSystem) setCustomSystems(cs => [...cs, newSystem]);
-            addGame(g);
-            setShowAddPanel(false);
-          }}
-        />
-      )}
-    </div>
-  );
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      pointerEvents: "none",
+      zIndex: 0,
+      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      top: -100,
+      left: -100,
+      width: 400,
+      height: 400,
+      borderRadius: "50%",
+      background: "radial-gradient(circle, rgba(255,100,0,0.08) 0%, transparent 70%)",
+      pointerEvents: "none",
+      zIndex: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      bottom: -100,
+      right: -100,
+      width: 500,
+      height: 500,
+      borderRadius: "50%",
+      background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)",
+      pointerEvents: "none",
+      zIndex: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      zIndex: 1,
+      maxWidth: 1100,
+      margin: "0 auto",
+      padding: "0 16px 80px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: "32px 0 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      letterSpacing: 6,
+      color: "#ff6b35",
+      marginBottom: 8,
+      textTransform: "uppercase"
+    }
+  }, "▓▒░ COLLECTION DATABASE ░▒▓"), /*#__PURE__*/React.createElement("h1", {
+    style: {
+      margin: 0,
+      fontSize: "clamp(22px, 5vw, 38px)",
+      fontWeight: 900,
+      letterSpacing: 2,
+      textShadow: "0 0 20px rgba(255,107,53,0.6), 0 0 40px rgba(255,107,53,0.3)",
+      color: "#fff",
+      fontFamily: "'Courier New', monospace"
+    }
+  }, "NEON GROTTO"), /*#__PURE__*/React.createElement("h2", {
+    style: {
+      margin: "4px 0 0",
+      fontSize: "clamp(12px, 2.5vw, 17px)",
+      fontWeight: 400,
+      letterSpacing: 6,
+      color: "#ff6b35",
+      textShadow: "0 0 10px rgba(255,107,53,0.5)"
+    }
+  }, "ARCADE INVENTORY"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12,
+      fontSize: 13,
+      color: "#888"
+    }
+  }, stats.total.toLocaleString(), " copies · ", stats.unique, " titles · ", stats.systems, " systems")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 2,
+      marginBottom: 20,
+      borderBottom: "1px solid #222"
+    }
+  }, ["list", "stats"].map(tab => /*#__PURE__*/React.createElement("button", {
+    key: tab,
+    onClick: () => setActiveTab(tab),
+    style: {
+      background: activeTab === tab ? "#ff6b35" : "transparent",
+      color: activeTab === tab ? "#000" : "#888",
+      border: "none",
+      padding: "8px 20px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 12,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+      fontWeight: activeTab === tab ? 900 : 400,
+      transition: "all 0.15s"
+    }
+  }, tab === "list" ? "▤ LIBRARY" : "▦ STATS")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }), accessToken && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowAddPanel(true),
+    style: {
+      background: "transparent",
+      color: "#4cff91",
+      border: "1px solid #4cff91",
+      padding: "6px 14px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      letterSpacing: 1,
+      textTransform: "uppercase",
+      marginBottom: 2,
+      marginRight: 6
+    }
+  }, "+ ADD TITLE"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowSyncPanel(true),
+    style: {
+      background: accessToken && syncStatus !== "error" ? "rgba(76,255,145,0.08)" : "transparent",
+      color: syncStatus === "error" ? "#ff4d4d" : syncStatus === "syncing" ? "#f7c948" : accessToken ? "#4cff91" : "#555",
+      border: `1px solid ${syncStatus === "error" ? "#ff4d4d" : accessToken ? "#4cff91" : "#333"}`,
+      padding: "6px 14px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      letterSpacing: 1,
+      textTransform: "uppercase",
+      marginBottom: 2,
+      transition: "all 0.2s"
+    }
+  }, syncStatus === "syncing" ? "⟳ SYNCING" : syncStatus === "error" ? "✗ ERROR" : accessToken ? "✓ CONNECTED" : "☁ DRIVE")), activeTab === "list" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: search,
+    onChange: e => setSearch(e.target.value),
+    placeholder: "SEARCH TITLES...",
+    style: {
+      flex: "1 1 200px",
+      background: "#111",
+      border: "1px solid #333",
+      color: "#e8e0d5",
+      padding: "8px 12px",
+      fontFamily: "inherit",
+      fontSize: 12,
+      letterSpacing: 1,
+      outline: "none",
+      boxShadow: search ? "0 0 8px rgba(255,107,53,0.3)" : "none",
+      transition: "box-shadow 0.2s"
+    }
+  }), /*#__PURE__*/React.createElement(Select, {
+    value: filterSystem,
+    onChange: setFilterSystem,
+    options: systems
+  }), /*#__PURE__*/React.createElement(Select, {
+    value: filterOwner,
+    onChange: setFilterOwner,
+    options: ["All", "Unassigned", ...OWNER_LIST]
+  }), /*#__PURE__*/React.createElement(Select, {
+    value: filterFormat,
+    onChange: setFilterFormat,
+    options: ["All", "Physical", "Digital"]
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#555",
+      marginBottom: 12,
+      letterSpacing: 1
+    }
+  }, "SHOWING ", filtered.length, " OF ", games.length, " TITLES"), /*#__PURE__*/React.createElement(GameList, {
+    games: filtered,
+    editingId: editingId,
+    editData: editData,
+    setEditData: setEditData,
+    onEdit: startEdit,
+    onSave: saveEdit,
+    onCancel: () => setEditingId(null),
+    onDelete: deleteGame,
+    isConnected: !!accessToken
+  })), activeTab === "stats" && /*#__PURE__*/React.createElement(StatsPanel, {
+    stats: stats,
+    games: games
+  })), showSyncPanel && /*#__PURE__*/React.createElement(SyncPanel, {
+    onClose: () => setShowSyncPanel(false),
+    onConnect: handleConnect,
+    isConnected: !!accessToken,
+    sheetId: sheetId,
+    syncStatus: syncStatus,
+    syncError: syncError
+  }), showAddPanel && /*#__PURE__*/React.createElement(AddGamePanel, {
+    systems: allSystems,
+    onClose: () => setShowAddPanel(false),
+    onAdd: (g, newSystem) => {
+      if (newSystem) setCustomSystems(cs => [...cs, newSystem]);
+      addGame(g);
+      setShowAddPanel(false);
+    }
+  }));
 }
 
 // ============================================================
 // COMPONENTS
 // ============================================================
 
-function Select({ value, onChange, options }) {
-  return (
-    <select value={value} onChange={e => onChange(e.target.value)} style={{
-      background: "#111", border: "1px solid #333", color: "#e8e0d5",
-      padding: "8px 12px", fontFamily: "inherit", fontSize: 11,
-      letterSpacing: 1, outline: "none", cursor: "pointer",
-      textTransform: "uppercase",
-    }}>
-      {options.map(o => <option key={o} value={o}>{o}</option>)}
-    </select>
-  );
+function Select({
+  value,
+  onChange,
+  options
+}) {
+  return /*#__PURE__*/React.createElement("select", {
+    value: value,
+    onChange: e => onChange(e.target.value),
+    style: {
+      background: "#111",
+      border: "1px solid #333",
+      color: "#e8e0d5",
+      padding: "8px 12px",
+      fontFamily: "inherit",
+      fontSize: 11,
+      letterSpacing: 1,
+      outline: "none",
+      cursor: "pointer",
+      textTransform: "uppercase"
+    }
+  }, options.map(o => /*#__PURE__*/React.createElement("option", {
+    key: o,
+    value: o
+  }, o)));
 }
-
-function GameList({ games, editingId, editData, setEditData, onEdit, onSave, onCancel, onDelete, isConnected }) {
-  if (games.length === 0) return (
-    <div style={{ textAlign: "center", padding: 60, color: "#444", fontSize: 13, letterSpacing: 2 }}>
-      NO TITLES FOUND
-    </div>
-  );
-
+function GameList({
+  games,
+  editingId,
+  editData,
+  setEditData,
+  onEdit,
+  onSave,
+  onCancel,
+  onDelete,
+  isConnected
+}) {
+  if (games.length === 0) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 60,
+      color: "#444",
+      fontSize: 13,
+      letterSpacing: 2
+    }
+  }, "NO TITLES FOUND");
   const grouped = {};
   games.forEach(g => {
     if (!grouped[g.system]) grouped[g.system] = [];
     grouped[g.system].push(g);
   });
-
-  return (
-    <div>
-      {SYSTEM_ORDER.filter(s => grouped[s]).map(system => (
-        <div key={system} style={{ marginBottom: 28 }}>
-          <div style={{
-            display: "flex", alignItems: "center", gap: 12, marginBottom: 8,
-          }}>
-            <span style={{
-              fontSize: 11, fontWeight: 900, letterSpacing: 3,
-              color: "#ff6b35", textTransform: "uppercase",
-              textShadow: "0 0 8px rgba(255,107,53,0.4)",
-            }}>
-              {system}
-            </span>
-            <span style={{ fontSize: 10, color: "#444", letterSpacing: 1 }}>
-              ({grouped[system].reduce((s, g) => s + g.qty, 0)} copies / {grouped[system].length} titles)
-            </span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, #333, transparent)" }} />
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {grouped[system].map(game => (
-              <GameRow
-                key={game.id}
-                game={game}
-                isEditing={editingId === game.id}
-                editData={editData}
-                setEditData={setEditData}
-                onEdit={() => onEdit(game)}
-                onSave={() => onSave(game.id)}
-                onCancel={onCancel}
-                onDelete={() => onDelete(game.id)}
-                isConnected={isConnected}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", null, SYSTEM_ORDER.filter(s => grouped[s]).map(system => /*#__PURE__*/React.createElement("div", {
+    key: system,
+    style: {
+      marginBottom: 28
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      fontWeight: 900,
+      letterSpacing: 3,
+      color: "#ff6b35",
+      textTransform: "uppercase",
+      textShadow: "0 0 8px rgba(255,107,53,0.4)"
+    }
+  }, system), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: "#444",
+      letterSpacing: 1
+    }
+  }, "(", grouped[system].reduce((s, g) => s + g.qty, 0), " copies / ", grouped[system].length, " titles)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      height: 1,
+      background: "linear-gradient(90deg, #333, transparent)"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 2
+    }
+  }, grouped[system].map(game => /*#__PURE__*/React.createElement(GameRow, {
+    key: game.id,
+    game: game,
+    isEditing: editingId === game.id,
+    editData: editData,
+    setEditData: setEditData,
+    onEdit: () => onEdit(game),
+    onSave: () => onSave(game.id),
+    onCancel: onCancel,
+    onDelete: () => onDelete(game.id),
+    isConnected: isConnected
+  }))))));
 }
-
-function GameRow({ game, isEditing, editData, setEditData, onEdit, onSave, onCancel, onDelete, isConnected }) {
+function GameRow({
+  game,
+  isEditing,
+  editData,
+  setEditData,
+  onEdit,
+  onSave,
+  onCancel,
+  onDelete,
+  isConnected
+}) {
   const ownerColor = OWNER_COLORS[game.owner] || "#444";
   const [confirmDelete, setConfirmDelete] = useState(false);
-
   if (isEditing) {
-    return (
-      <div style={{
-        display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
-        background: "#111", border: "1px solid #ff6b35", padding: "8px 12px",
-        boxShadow: "0 0 12px rgba(255,107,53,0.2)",
-      }}>
-        {/* Title */}
-        <input
-          value={editData.title}
-          onChange={e => setEditData(d => ({...d, title: e.target.value}))}
-          style={{
-            flex: "1 1 180px", background: "#1a1a1a", border: "1px solid #555",
-            color: "#fff", padding: "4px 8px", fontFamily: "inherit", fontSize: 12,
-            outline: "none",
-          }}
-        />
-        {/* Qty */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <button onClick={() => setEditData(d => ({...d, qty: Math.max(1, (d.qty||1) - 1)}))}
-            style={{ background: "#222", color: "#ff6b35", border: "1px solid #333", width: 24, height: 24, cursor: "pointer", fontFamily: "inherit", fontSize: 14, lineHeight: 1 }}>−</button>
-          <span style={{ color: "#fff", fontSize: 13, minWidth: 20, textAlign: "center" }}>{editData.qty || 1}</span>
-          <button onClick={() => setEditData(d => ({...d, qty: (d.qty||1) + 1}))}
-            style={{ background: "#222", color: "#ff6b35", border: "1px solid #333", width: 24, height: 24, cursor: "pointer", fontFamily: "inherit", fontSize: 14, lineHeight: 1 }}>+</button>
-        </div>
-        {/* Owner */}
-        <select value={editData.owner} onChange={e => setEditData(d => ({...d, owner: e.target.value}))}
-          style={{ background: "#1a1a1a", border: "1px solid #444", color: "#e8e0d5", padding: "4px 8px", fontFamily: "inherit", fontSize: 11 }}>
-          <option value="">No Owner</option>
-          {OWNER_LIST.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-        {/* Format */}
-        <select value={editData.format} onChange={e => setEditData(d => ({...d, format: e.target.value}))}
-          style={{ background: "#1a1a1a", border: "1px solid #444", color: "#e8e0d5", padding: "4px 8px", fontFamily: "inherit", fontSize: 11 }}>
-          <option value="">Physical</option>
-          <option value="Digital">Digital</option>
-        </select>
-        <button onClick={onSave} style={{ background: "#ff6b35", color: "#000", border: "none", padding: "4px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 900 }}>SAVE</button>
-        <button onClick={onCancel} style={{ background: "transparent", color: "#666", border: "1px solid #333", padding: "4px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 11 }}>✕</button>
-        {/* Delete */}
-        {confirmDelete ? (
-          <>
-            <span style={{ fontSize: 11, color: "#ff4d4d" }}>Sure?</span>
-            <button onClick={onDelete} style={{ background: "#ff4d4d", color: "#000", border: "none", padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 900 }}>YES</button>
-            <button onClick={() => setConfirmDelete(false)} style={{ background: "transparent", color: "#666", border: "1px solid #333", padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11 }}>NO</button>
-          </>
-        ) : (
-          <button onClick={() => setConfirmDelete(true)} style={{ background: "transparent", color: "#ff4d4d", border: "1px solid #ff4d4d", padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11 }}>🗑</button>
-        )}
-      </div>
-    );
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        flexWrap: "wrap",
+        background: "#111",
+        border: "1px solid #ff6b35",
+        padding: "8px 12px",
+        boxShadow: "0 0 12px rgba(255,107,53,0.2)"
+      }
+    }, /*#__PURE__*/React.createElement("input", {
+      value: editData.title,
+      onChange: e => setEditData(d => ({
+        ...d,
+        title: e.target.value
+      })),
+      style: {
+        flex: "1 1 180px",
+        background: "#1a1a1a",
+        border: "1px solid #555",
+        color: "#fff",
+        padding: "4px 8px",
+        fontFamily: "inherit",
+        fontSize: 12,
+        outline: "none"
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 4
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEditData(d => ({
+        ...d,
+        qty: Math.max(1, (d.qty || 1) - 1)
+      })),
+      style: {
+        background: "#222",
+        color: "#ff6b35",
+        border: "1px solid #333",
+        width: 24,
+        height: 24,
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 14,
+        lineHeight: 1
+      }
+    }, "−"), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: "#fff",
+        fontSize: 13,
+        minWidth: 20,
+        textAlign: "center"
+      }
+    }, editData.qty || 1), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEditData(d => ({
+        ...d,
+        qty: (d.qty || 1) + 1
+      })),
+      style: {
+        background: "#222",
+        color: "#ff6b35",
+        border: "1px solid #333",
+        width: 24,
+        height: 24,
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 14,
+        lineHeight: 1
+      }
+    }, "+")), /*#__PURE__*/React.createElement("select", {
+      value: editData.owner,
+      onChange: e => setEditData(d => ({
+        ...d,
+        owner: e.target.value
+      })),
+      style: {
+        background: "#1a1a1a",
+        border: "1px solid #444",
+        color: "#e8e0d5",
+        padding: "4px 8px",
+        fontFamily: "inherit",
+        fontSize: 11
+      }
+    }, /*#__PURE__*/React.createElement("option", {
+      value: ""
+    }, "No Owner"), OWNER_LIST.map(o => /*#__PURE__*/React.createElement("option", {
+      key: o,
+      value: o
+    }, o))), /*#__PURE__*/React.createElement("select", {
+      value: editData.format,
+      onChange: e => setEditData(d => ({
+        ...d,
+        format: e.target.value
+      })),
+      style: {
+        background: "#1a1a1a",
+        border: "1px solid #444",
+        color: "#e8e0d5",
+        padding: "4px 8px",
+        fontFamily: "inherit",
+        fontSize: 11
+      }
+    }, /*#__PURE__*/React.createElement("option", {
+      value: ""
+    }, "Physical"), /*#__PURE__*/React.createElement("option", {
+      value: "Digital"
+    }, "Digital")), /*#__PURE__*/React.createElement("button", {
+      onClick: onSave,
+      style: {
+        background: "#ff6b35",
+        color: "#000",
+        border: "none",
+        padding: "4px 12px",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 11,
+        fontWeight: 900
+      }
+    }, "SAVE"), /*#__PURE__*/React.createElement("button", {
+      onClick: onCancel,
+      style: {
+        background: "transparent",
+        color: "#666",
+        border: "1px solid #333",
+        padding: "4px 12px",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 11
+      }
+    }, "✕"), confirmDelete ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        color: "#ff4d4d"
+      }
+    }, "Sure?"), /*#__PURE__*/React.createElement("button", {
+      onClick: onDelete,
+      style: {
+        background: "#ff4d4d",
+        color: "#000",
+        border: "none",
+        padding: "4px 10px",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 11,
+        fontWeight: 900
+      }
+    }, "YES"), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setConfirmDelete(false),
+      style: {
+        background: "transparent",
+        color: "#666",
+        border: "1px solid #333",
+        padding: "4px 10px",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 11
+      }
+    }, "NO")) : /*#__PURE__*/React.createElement("button", {
+      onClick: () => setConfirmDelete(true),
+      style: {
+        background: "transparent",
+        color: "#ff4d4d",
+        border: "1px solid #ff4d4d",
+        padding: "4px 10px",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        fontSize: 11
+      }
+    }, "🗑"));
   }
-
-  return (
-    <div
-      onClick={isConnected ? onEdit : undefined}
-      style={{
-        display: "flex", alignItems: "center", gap: 10,
-        padding: "5px 10px", cursor: isConnected ? "pointer" : "default",
-        transition: "background 0.1s",
-        borderLeft: `2px solid ${game.owner ? ownerColor : "transparent"}`,
-      }}
-      onMouseEnter={e => { if (isConnected) e.currentTarget.style.background = "#111"; }}
-      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-    >
-      <span style={{ fontSize: 13, color: game.qty > 1 ? "#fff" : "#ccc", flex: "1 1 auto" }}>
-        {game.title}
-        {game.qty > 1 && (
-          <span style={{ marginLeft: 6, fontSize: 10, color: "#ff6b35", fontWeight: 900 }}>×{game.qty}</span>
-        )}
-      </span>
-      <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0 }}>
-        {game.format === "Digital" && (
-          <span style={{ fontSize: 9, color: "#3da9fc", border: "1px solid #3da9fc", padding: "1px 5px", letterSpacing: 1 }}>
-            DIGITAL
-          </span>
-        )}
-        {game.owner && (
-          <span style={{ fontSize: 9, color: ownerColor, border: `1px solid ${ownerColor}`, padding: "1px 5px", letterSpacing: 1 }}>
-            {game.owner.toUpperCase()}
-          </span>
-        )}
-        {isConnected && <span style={{ fontSize: 10, color: "#333" }}>✎</span>}
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    onClick: isConnected ? onEdit : undefined,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "5px 10px",
+      cursor: isConnected ? "pointer" : "default",
+      transition: "background 0.1s",
+      borderLeft: `2px solid ${game.owner ? ownerColor : "transparent"}`
+    },
+    onMouseEnter: e => {
+      if (isConnected) e.currentTarget.style.background = "#111";
+    },
+    onMouseLeave: e => e.currentTarget.style.background = "transparent"
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      color: game.qty > 1 ? "#fff" : "#ccc",
+      flex: "1 1 auto"
+    }
+  }, game.title, game.qty > 1 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: 6,
+      fontSize: 10,
+      color: "#ff6b35",
+      fontWeight: 900
+    }
+  }, "×", game.qty)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      alignItems: "center",
+      flexShrink: 0
+    }
+  }, game.format === "Digital" && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      color: "#3da9fc",
+      border: "1px solid #3da9fc",
+      padding: "1px 5px",
+      letterSpacing: 1
+    }
+  }, "DIGITAL"), game.owner && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 9,
+      color: ownerColor,
+      border: `1px solid ${ownerColor}`,
+      padding: "1px 5px",
+      letterSpacing: 1
+    }
+  }, game.owner.toUpperCase()), isConnected && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: "#333"
+    }
+  }, "✎")));
 }
-
-function StatsPanel({ stats, games }) {
-  const topSystems = Object.entries(stats.bySystem)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 15);
+function StatsPanel({
+  stats,
+  games
+}) {
+  const topSystems = Object.entries(stats.bySystem).sort((a, b) => b[1] - a[1]).slice(0, 15);
   const maxCount = topSystems[0]?.[1] || 1;
-
   const ownerCounts = {};
   games.forEach(g => {
     const o = g.owner || "Unassigned";
     ownerCounts[o] = (ownerCounts[o] || 0) + g.qty;
   });
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12 }}>
-        {[
-          { label: "Total Copies", value: stats.total },
-          { label: "Unique Titles", value: stats.unique },
-          { label: "Systems", value: stats.systems },
-        ].map(s => (
-          <div key={s.label} style={{ background: "#111", border: "1px solid #222", padding: 20, textAlign: "center" }}>
-            <div style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 900, color: "#ff6b35",
-              textShadow: "0 0 15px rgba(255,107,53,0.5)" }}>
-              {s.value.toLocaleString()}
-            </div>
-            <div style={{ fontSize: 10, color: "#555", letterSpacing: 2, marginTop: 4, textTransform: "uppercase" }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <div style={{ fontSize: 11, color: "#ff6b35", letterSpacing: 3, marginBottom: 12, textTransform: "uppercase" }}>
-          Games by System
-        </div>
-        {topSystems.map(([sys, count]) => (
-          <div key={sys} style={{ marginBottom: 6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-              <span style={{ fontSize: 11, color: "#aaa", letterSpacing: 1 }}>{sys}</span>
-              <span style={{ fontSize: 11, color: "#ff6b35" }}>{count}</span>
-            </div>
-            <div style={{ height: 4, background: "#1a1a1a", borderRadius: 2 }}>
-              <div style={{
-                height: "100%", borderRadius: 2,
-                width: `${(count / maxCount) * 100}%`,
-                background: "linear-gradient(90deg, #ff6b35, #ff4d00)",
-                boxShadow: "0 0 6px rgba(255,107,53,0.4)",
-                transition: "width 0.5s ease",
-              }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <div style={{ fontSize: 11, color: "#ff6b35", letterSpacing: 3, marginBottom: 12, textTransform: "uppercase" }}>
-          By Owner
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          {Object.entries(ownerCounts).map(([owner, count]) => (
-            <div key={owner} style={{
-              background: "#111", border: `1px solid ${OWNER_COLORS[owner] || "#333"}`,
-              padding: "10px 16px", minWidth: 100, textAlign: "center",
-            }}>
-              <div style={{ fontSize: 20, fontWeight: 900, color: OWNER_COLORS[owner] || "#666" }}>{count}</div>
-              <div style={{ fontSize: 10, color: "#555", letterSpacing: 1, marginTop: 2 }}>{owner.toUpperCase()}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 32
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+      gap: 12
+    }
+  }, [{
+    label: "Total Copies",
+    value: stats.total
+  }, {
+    label: "Unique Titles",
+    value: stats.unique
+  }, {
+    label: "Systems",
+    value: stats.systems
+  }].map(s => /*#__PURE__*/React.createElement("div", {
+    key: s.label,
+    style: {
+      background: "#111",
+      border: "1px solid #222",
+      padding: 20,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: "clamp(24px, 4vw, 36px)",
+      fontWeight: 900,
+      color: "#ff6b35",
+      textShadow: "0 0 15px rgba(255,107,53,0.5)"
+    }
+  }, s.value.toLocaleString()), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#555",
+      letterSpacing: 2,
+      marginTop: 4,
+      textTransform: "uppercase"
+    }
+  }, s.label)))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#ff6b35",
+      letterSpacing: 3,
+      marginBottom: 12,
+      textTransform: "uppercase"
+    }
+  }, "Games by System"), topSystems.map(([sys, count]) => /*#__PURE__*/React.createElement("div", {
+    key: sys,
+    style: {
+      marginBottom: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 3
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: "#aaa",
+      letterSpacing: 1
+    }
+  }, sys), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: "#ff6b35"
+    }
+  }, count)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 4,
+      background: "#1a1a1a",
+      borderRadius: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: "100%",
+      borderRadius: 2,
+      width: `${count / maxCount * 100}%`,
+      background: "linear-gradient(90deg, #ff6b35, #ff4d00)",
+      boxShadow: "0 0 6px rgba(255,107,53,0.4)",
+      transition: "width 0.5s ease"
+    }
+  }))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#ff6b35",
+      letterSpacing: 3,
+      marginBottom: 12,
+      textTransform: "uppercase"
+    }
+  }, "By Owner"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 10
+    }
+  }, Object.entries(ownerCounts).map(([owner, count]) => /*#__PURE__*/React.createElement("div", {
+    key: owner,
+    style: {
+      background: "#111",
+      border: `1px solid ${OWNER_COLORS[owner] || "#333"}`,
+      padding: "10px 16px",
+      minWidth: 100,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 20,
+      fontWeight: 900,
+      color: OWNER_COLORS[owner] || "#666"
+    }
+  }, count), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#555",
+      letterSpacing: 1,
+      marginTop: 2
+    }
+  }, owner.toUpperCase()))))));
 }
-
-function SyncPanel({ onClose, onConnect, isConnected, sheetId, syncStatus, syncError }) {
+function SyncPanel({
+  onClose,
+  onConnect,
+  isConnected,
+  sheetId,
+  syncStatus,
+  syncError
+}) {
   const [tokenInput, setTokenInput] = useState("");
-
-  return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)",
-      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
-    }} onClick={onClose}>
-      <div style={{
-        background: "#0e0e14", border: "1px solid #ff6b35", padding: 32,
-        maxWidth: 480, width: "90%", boxShadow: "0 0 40px rgba(255,107,53,0.2)",
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ fontSize: 11, letterSpacing: 3, color: "#ff6b35", marginBottom: 16 }}>
-          ☁ GOOGLE DRIVE SYNC
-        </div>
-
-        {/* Error banner */}
-        {syncStatus === "error" && (
-          <div style={{
-            background: "#1a0000", border: "1px solid #ff4d4d", padding: "10px 14px",
-            marginBottom: 16, borderRadius: 2,
-          }}>
-            <div style={{ fontSize: 11, color: "#ff4d4d", fontWeight: 900, letterSpacing: 1, marginBottom: 4 }}>
-              ✗ SYNC ERROR
-            </div>
-            <div style={{ fontSize: 11, color: "#ff9999", wordBreak: "break-all", lineHeight: 1.6 }}>
-              {syncError || "Unknown error — check your token and scopes."}
-            </div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 8 }}>
-              Common fixes: token expired (regenerate at OAuth Playground) · missing spreadsheets or drive scope · extra whitespace in token
-            </div>
-          </div>
-        )}
-
-        {syncStatus === "syncing" && (
-          <div style={{ fontSize: 12, color: "#f7c948", marginBottom: 16, letterSpacing: 1 }}>
-            ⟳ Connecting...
-          </div>
-        )}
-
-        {isConnected && syncStatus !== "error" ? (
-          <div>
-            <div style={{ color: "#4cff91", fontSize: 13, marginBottom: 12 }}>✓ Connected to Google Drive</div>
-            {sheetId && (
-              <a href={`https://docs.google.com/spreadsheets/d/${sheetId}`} target="_blank" rel="noreferrer"
-                style={{ color: "#3da9fc", fontSize: 12 }}>
-                Open Spreadsheet ↗
-              </a>
-            )}
-          </div>
-        ) : (
-          <div>
-            <p style={{ fontSize: 12, color: "#888", lineHeight: 1.7, marginTop: 0 }}>
-              Paste a Google OAuth access token with Sheets and Drive scopes.
-            </p>
-            <p style={{ fontSize: 11, color: "#555", lineHeight: 1.7 }}>
-              Get one at <span style={{ color: "#3da9fc" }}>developers.google.com/oauthplayground</span><br/>
-              Input your own scopes field:<br/>
-              <code style={{ color: "#f7c948", fontSize: 10, wordBreak: "break-all" }}>
-                https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive
-              </code>
-            </p>
-            <input
-              value={tokenInput}
-              onChange={e => setTokenInput(e.target.value)}
-              placeholder="Paste access token here..."
-              style={{
-                width: "100%", background: "#111", border: "1px solid #333",
-                color: "#e8e0d5", padding: "8px 12px", fontFamily: "inherit",
-                fontSize: 12, outline: "none", marginTop: 8, boxSizing: "border-box",
-              }}
-            />
-            <button
-              onClick={() => tokenInput.trim() && onConnect(tokenInput.trim())}
-              style={{
-                marginTop: 12, background: "#ff6b35", color: "#000", border: "none",
-                padding: "10px 24px", cursor: "pointer", fontFamily: "inherit",
-                fontSize: 12, fontWeight: 900, letterSpacing: 2,
-                width: "100%",
-              }}
-            >
-              CONNECT & SYNC
-            </button>
-          </div>
-        )}
-
-        <button onClick={onClose} style={{
-          marginTop: 16, background: "transparent", color: "#555",
-          border: "1px solid #222", padding: "8px 20px", cursor: "pointer",
-          fontFamily: "inherit", fontSize: 11, letterSpacing: 1, width: "100%",
-        }}>
-          CLOSE
-        </button>
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.85)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 100
+    },
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#0e0e14",
+      border: "1px solid #ff6b35",
+      padding: 32,
+      maxWidth: 480,
+      width: "90%",
+      boxShadow: "0 0 40px rgba(255,107,53,0.2)"
+    },
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      letterSpacing: 3,
+      color: "#ff6b35",
+      marginBottom: 16
+    }
+  }, "☁ GOOGLE DRIVE SYNC"), syncStatus === "error" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#1a0000",
+      border: "1px solid #ff4d4d",
+      padding: "10px 14px",
+      marginBottom: 16,
+      borderRadius: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#ff4d4d",
+      fontWeight: 900,
+      letterSpacing: 1,
+      marginBottom: 4
+    }
+  }, "✗ SYNC ERROR"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "#ff9999",
+      wordBreak: "break-all",
+      lineHeight: 1.6
+    }
+  }, syncError || "Unknown error — check your token and scopes."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: "#555",
+      marginTop: 8
+    }
+  }, "Common fixes: token expired (regenerate at OAuth Playground) · missing spreadsheets or drive scope · extra whitespace in token")), syncStatus === "syncing" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: "#f7c948",
+      marginBottom: 16,
+      letterSpacing: 1
+    }
+  }, "⟳ Connecting..."), isConnected && syncStatus !== "error" ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#4cff91",
+      fontSize: 13,
+      marginBottom: 12
+    }
+  }, "✓ Connected to Google Drive"), sheetId && /*#__PURE__*/React.createElement("a", {
+    href: `https://docs.google.com/spreadsheets/d/${sheetId}`,
+    target: "_blank",
+    rel: "noreferrer",
+    style: {
+      color: "#3da9fc",
+      fontSize: 12
+    }
+  }, "Open Spreadsheet ↗")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 12,
+      color: "#888",
+      lineHeight: 1.7,
+      marginTop: 0
+    }
+  }, "Paste a Google OAuth access token with Sheets and Drive scopes."), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 11,
+      color: "#555",
+      lineHeight: 1.7
+    }
+  }, "Get one at ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#3da9fc"
+    }
+  }, "developers.google.com/oauthplayground"), /*#__PURE__*/React.createElement("br", null), "Input your own scopes field:", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("code", {
+    style: {
+      color: "#f7c948",
+      fontSize: 10,
+      wordBreak: "break-all"
+    }
+  }, "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive")), /*#__PURE__*/React.createElement("input", {
+    value: tokenInput,
+    onChange: e => setTokenInput(e.target.value),
+    placeholder: "Paste access token here...",
+    style: {
+      width: "100%",
+      background: "#111",
+      border: "1px solid #333",
+      color: "#e8e0d5",
+      padding: "8px 12px",
+      fontFamily: "inherit",
+      fontSize: 12,
+      outline: "none",
+      marginTop: 8,
+      boxSizing: "border-box"
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => tokenInput.trim() && onConnect(tokenInput.trim()),
+    style: {
+      marginTop: 12,
+      background: "#ff6b35",
+      color: "#000",
+      border: "none",
+      padding: "10px 24px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 12,
+      fontWeight: 900,
+      letterSpacing: 2,
+      width: "100%"
+    }
+  }, "CONNECT & SYNC")), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      marginTop: 16,
+      background: "transparent",
+      color: "#555",
+      border: "1px solid #222",
+      padding: "8px 20px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      letterSpacing: 1,
+      width: "100%"
+    }
+  }, "CLOSE")));
 }
-
-
-function AddGamePanel({ systems, onClose, onAdd }) {
+function AddGamePanel({
+  systems,
+  onClose,
+  onAdd
+}) {
   const [title, setTitle] = useState("");
   const [system, setSystem] = useState(systems[0] || "");
   const [isNewSystem, setIsNewSystem] = useState(false);
@@ -1574,125 +4129,258 @@ function AddGamePanel({ systems, onClose, onAdd }) {
   const [qty, setQty] = useState(1);
   const [owner, setOwner] = useState("");
   const [format, setFormat] = useState("");
-
   const effectiveSystem = isNewSystem ? newSystemName.trim() : system;
-
   const handleAdd = () => {
     if (!title.trim() || !effectiveSystem) return;
-    onAdd(
-      { title: title.trim(), system: effectiveSystem, qty, owner, format },
-      isNewSystem ? effectiveSystem : null
-    );
+    onAdd({
+      title: title.trim(),
+      system: effectiveSystem,
+      qty,
+      owner,
+      format
+    }, isNewSystem ? effectiveSystem : null);
   };
-
   const inputStyle = {
-    width: "100%", background: "#111", border: "1px solid #333",
-    color: "#e8e0d5", padding: "8px 12px", fontFamily: "inherit",
-    fontSize: 12, outline: "none", boxSizing: "border-box", marginBottom: 10,
+    width: "100%",
+    background: "#111",
+    border: "1px solid #333",
+    color: "#e8e0d5",
+    padding: "8px 12px",
+    fontFamily: "inherit",
+    fontSize: 12,
+    outline: "none",
+    boxSizing: "border-box",
+    marginBottom: 10
   };
-  const labelStyle = { fontSize: 10, color: "#555", letterSpacing: 2, textTransform: "uppercase", display: "block", marginBottom: 4 };
-
-  return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)",
-      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
-    }} onClick={onClose}>
-      <div style={{
-        background: "#0e0e14", border: "1px solid #4cff91", padding: 32,
-        maxWidth: 440, width: "90%", boxShadow: "0 0 40px rgba(76,255,145,0.15)",
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ fontSize: 11, letterSpacing: 3, color: "#4cff91", marginBottom: 20 }}>
-          + ADD NEW TITLE
-        </div>
-
-        <label style={labelStyle}>Title</label>
-        <input value={title} onChange={e => setTitle(e.target.value)}
-          placeholder="Game title..."
-          onKeyDown={e => e.key === "Enter" && handleAdd()}
-          style={inputStyle} autoFocus />
-
-        <label style={labelStyle}>Platform</label>
-        {isNewSystem ? (
-          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-            <input
-              value={newSystemName}
-              onChange={e => setNewSystemName(e.target.value)}
-              placeholder="New platform name..."
-              style={{ ...inputStyle, marginBottom: 0, flex: 1 }}
-              autoFocus
-            />
-            <button onClick={() => { setIsNewSystem(false); setNewSystemName(""); }}
-              style={{ background: "transparent", color: "#666", border: "1px solid #333", padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, whiteSpace: "nowrap" }}>
-              ← Back
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-            <select value={system} onChange={e => setSystem(e.target.value)}
-              style={{ ...inputStyle, marginBottom: 0, flex: 1, cursor: "pointer" }}>
-              {systems.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <button onClick={() => setIsNewSystem(true)}
-              style={{ background: "transparent", color: "#4cff91", border: "1px solid #4cff91", padding: "4px 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, whiteSpace: "nowrap" }}>
-              + New
-            </button>
-          </div>
-        )}
-
-        <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Copies</label>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button onClick={() => setQty(q => Math.max(1, q - 1))}
-                style={{ background: "#1a1a1a", color: "#ff6b35", border: "1px solid #333", width: 32, height: 32, cursor: "pointer", fontFamily: "inherit", fontSize: 16 }}>−</button>
-              <span style={{ color: "#fff", fontSize: 16, minWidth: 24, textAlign: "center" }}>{qty}</span>
-              <button onClick={() => setQty(q => q + 1)}
-                style={{ background: "#1a1a1a", color: "#ff6b35", border: "1px solid #333", width: 32, height: 32, cursor: "pointer", fontFamily: "inherit", fontSize: 16 }}>+</button>
-            </div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Owner</label>
-            <select value={owner} onChange={e => setOwner(e.target.value)}
-              style={{...inputStyle, marginBottom: 0, cursor: "pointer"}}>
-              <option value="">None</option>
-              {OWNER_LIST.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Format</label>
-            <select value={format} onChange={e => setFormat(e.target.value)}
-              style={{...inputStyle, marginBottom: 0, cursor: "pointer"}}>
-              <option value="">Physical</option>
-              <option value="Digital">Digital</option>
-            </select>
-          </div>
-        </div>
-
-        <button onClick={handleAdd}
-          disabled={!title.trim() || !effectiveSystem}
-          style={{
-            marginTop: 8, background: (!title.trim() || !effectiveSystem) ? "#1a1a1a" : "#4cff91",
-            color: (!title.trim() || !effectiveSystem) ? "#444" : "#000", border: "none",
-            padding: "10px 24px", cursor: (!title.trim() || !effectiveSystem) ? "not-allowed" : "pointer",
-            fontFamily: "inherit", fontSize: 12, fontWeight: 900, letterSpacing: 2, width: "100%",
-            transition: "all 0.15s",
-          }}>
-          ADD TO INVENTORY
-        </button>
-        <button onClick={onClose} style={{
-          marginTop: 8, background: "transparent", color: "#555",
-          border: "1px solid #222", padding: "8px 20px", cursor: "pointer",
-          fontFamily: "inherit", fontSize: 11, letterSpacing: 1, width: "100%",
-        }}>
-          CANCEL
-        </button>
-      </div>
-    </div>
-  );
+  const labelStyle = {
+    fontSize: 10,
+    color: "#555",
+    letterSpacing: 2,
+    textTransform: "uppercase",
+    display: "block",
+    marginBottom: 4
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.85)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 100
+    },
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#0e0e14",
+      border: "1px solid #4cff91",
+      padding: 32,
+      maxWidth: 440,
+      width: "90%",
+      boxShadow: "0 0 40px rgba(76,255,145,0.15)"
+    },
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      letterSpacing: 3,
+      color: "#4cff91",
+      marginBottom: 20
+    }
+  }, "+ ADD NEW TITLE"), /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Title"), /*#__PURE__*/React.createElement("input", {
+    value: title,
+    onChange: e => setTitle(e.target.value),
+    placeholder: "Game title...",
+    onKeyDown: e => e.key === "Enter" && handleAdd(),
+    style: inputStyle,
+    autoFocus: true
+  }), /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Platform"), isNewSystem ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: newSystemName,
+    onChange: e => setNewSystemName(e.target.value),
+    placeholder: "New platform name...",
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      flex: 1
+    },
+    autoFocus: true
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setIsNewSystem(false);
+      setNewSystemName("");
+    },
+    style: {
+      background: "transparent",
+      color: "#666",
+      border: "1px solid #333",
+      padding: "4px 10px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      whiteSpace: "nowrap"
+    }
+  }, "← Back")) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    value: system,
+    onChange: e => setSystem(e.target.value),
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      flex: 1,
+      cursor: "pointer"
+    }
+  }, systems.map(s => /*#__PURE__*/React.createElement("option", {
+    key: s,
+    value: s
+  }, s))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsNewSystem(true),
+    style: {
+      background: "transparent",
+      color: "#4cff91",
+      border: "1px solid #4cff91",
+      padding: "4px 10px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      whiteSpace: "nowrap"
+    }
+  }, "+ New")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Copies"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setQty(q => Math.max(1, q - 1)),
+    style: {
+      background: "#1a1a1a",
+      color: "#ff6b35",
+      border: "1px solid #333",
+      width: 32,
+      height: 32,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 16
+    }
+  }, "−"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#fff",
+      fontSize: 16,
+      minWidth: 24,
+      textAlign: "center"
+    }
+  }, qty), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setQty(q => q + 1),
+    style: {
+      background: "#1a1a1a",
+      color: "#ff6b35",
+      border: "1px solid #333",
+      width: 32,
+      height: 32,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 16
+    }
+  }, "+"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Owner"), /*#__PURE__*/React.createElement("select", {
+    value: owner,
+    onChange: e => setOwner(e.target.value),
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "None"), OWNER_LIST.map(o => /*#__PURE__*/React.createElement("option", {
+    key: o,
+    value: o
+  }, o)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: labelStyle
+  }, "Format"), /*#__PURE__*/React.createElement("select", {
+    value: format,
+    onChange: e => setFormat(e.target.value),
+    style: {
+      ...inputStyle,
+      marginBottom: 0,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Physical"), /*#__PURE__*/React.createElement("option", {
+    value: "Digital"
+  }, "Digital")))), /*#__PURE__*/React.createElement("button", {
+    onClick: handleAdd,
+    disabled: !title.trim() || !effectiveSystem,
+    style: {
+      marginTop: 8,
+      background: !title.trim() || !effectiveSystem ? "#1a1a1a" : "#4cff91",
+      color: !title.trim() || !effectiveSystem ? "#444" : "#000",
+      border: "none",
+      padding: "10px 24px",
+      cursor: !title.trim() || !effectiveSystem ? "not-allowed" : "pointer",
+      fontFamily: "inherit",
+      fontSize: 12,
+      fontWeight: 900,
+      letterSpacing: 2,
+      width: "100%",
+      transition: "all 0.15s"
+    }
+  }, "ADD TO INVENTORY"), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      marginTop: 8,
+      background: "transparent",
+      color: "#555",
+      border: "1px solid #222",
+      padding: "8px 20px",
+      cursor: "pointer",
+      fontFamily: "inherit",
+      fontSize: 11,
+      letterSpacing: 1,
+      width: "100%"
+    }
+  }, "CANCEL")));
 }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+</script>
 </body>
 </html>
