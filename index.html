@@ -14,6 +14,27 @@
     ::-webkit-scrollbar-track { background: #111; }
     ::-webkit-scrollbar-thumb { background: #ff6b35; }
     select option { background: #111; color: #e8e0d5; }
+    [title] { cursor: help; }
+    [title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      border: 1px solid #ff6b35;
+      color: #e8e0d5;
+      font-size: 11px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      max-width: 280px;
+      white-space: normal;
+      z-index: 100;
+      pointer-events: none;
+      line-height: 1.5;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0;
+    }
   </style>
 </head>
 <body>
@@ -2261,6 +2282,13 @@ const GAME_TAGS = {
 // ============================================================
 // SURVEY QUESTIONS
 // ============================================================
+const GAMER_TYPE_TOOLTIPS = {
+  "The Achiever":  "I like to gain points, gear, achievements, or badges to show my progress",
+  "The Socializer": "I like to play with others, make friends, and enjoy shared experiences",
+  "The Explorer":  "I like to discover new areas, uncover secrets, and learn the world's lore",
+  "The Competitor": "I like to test my skills against others and prove I'm the best",
+};
+
 const SURVEY_QUESTIONS = [
   {
     id: "gamerType",
@@ -2270,6 +2298,7 @@ const SURVEY_QUESTIONS = [
     options: ["The Achiever","The Socializer","The Explorer","The Competitor"],
     tagKey: "gamerType",
     mapOption: o => o.replace("The ",""),
+    tooltips: GAMER_TYPE_TOOLTIPS,
   },
   {
     id: "genres",
@@ -2373,10 +2402,8 @@ function RecommendPanel({ games, allSystems }) {
   const [selectedSystems, setSelectedSystems] = useState(allSystems);
   const [answers, setAnswers] = useState({});
   const [currentQ, setCurrentQ] = useState(0);
-  const [mode, setMode] = useState("logic"); // logic | ai
+  const [mode, setMode] = useState("logic");
   const [results, setResults] = useState([]);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState("");
 
   const filteredGames = useMemo(() =>
     games.filter(g => selectedSystems.includes(g.system)),
@@ -2415,69 +2442,7 @@ function RecommendPanel({ games, allSystems }) {
     setStep("results");
   };
 
-  const runAiMode = async () => {
-    setAiLoading(true);
-    setAiError("");
-    const gameList = filteredGames.map(g => g.title + " (" + g.system + ")").join(", ");
-    const answerSummary = SURVEY_QUESTIONS.map(q => {
-      const ans = answers[q.id];
-      if (!ans) return null;
-      const val = Array.isArray(ans) ? ans.join(", ") : ans;
-      return q.label + ": " + val;
-    }).filter(Boolean).join("\n");
-
-    const prompt = `You are a video game recommendation expert. Based on the player's survey answers below, recommend the top 15 games from their library that best match their preferences. Only recommend games from the provided library list.
-
-PLAYER PREFERENCES:
-${answerSummary}
-
-THEIR GAME LIBRARY:
-${gameList}
-
-Respond ONLY with a JSON array of objects. Each object must have:
-- "title": exact game title as it appears in the library (including system in parentheses)
-- "reason": 1-2 sentence explanation of why this game matches their preferences
-
-Return exactly 15 recommendations sorted by best match first. No preamble, no markdown, just the JSON array.`;
-
-    try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-      const data = await response.json();
-      const text = data.content?.map(c => c.text || "").join("") || "";
-      const cleaned = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(cleaned);
-
-      // Match back to actual games
-      const matched = parsed.map(r => {
-        const titleOnly = r.title.replace(/\s*\(.*\)$/, "").trim();
-        const found = filteredGames.find(g =>
-          g.title.toLowerCase() === titleOnly.toLowerCase() ||
-          g.title.toLowerCase().includes(titleOnly.toLowerCase())
-        );
-        return found ? { ...found, reason: r.reason, score: 1 } : null;
-      }).filter(Boolean);
-
-      setResults(matched);
-      setStep("results");
-    } catch(e) {
-      setAiError("AI recommendation failed: " + (e.message || String(e)));
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
-  const handleSubmit = () => {
-    if (mode === "logic") runLogicMode();
-    else runAiMode();
-  };
+  const handleSubmit = () => { runLogicMode(); };
 
   const handlePrint = () => {
     const win = window.open("", "_blank");
@@ -2522,17 +2487,12 @@ Return exactly 15 recommendations sorted by best match first. No preamble, no ma
       <div style={{ marginBottom: 28 }}>
         <span style={labelStyle}>Mode</span>
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={() => setMode("logic")} style={mode === "logic" ? btnActive : btnBase}>
+          <button onClick={() => setMode("logic")} style={btnActive}>
             ⚙ Logic Mode
-          </button>
-          <button onClick={() => setMode("ai")} style={mode === "ai" ? btnActive : btnBase}>
-            ✦ AI Mode
           </button>
         </div>
         <div style={{ fontSize: 11, color: "#555", marginTop: 8, lineHeight: 1.6 }}>
-          {mode === "logic"
-            ? "Fast offline scoring — matches your survey answers against game tags. No internet needed."
-            : "Claude analyzes your preferences and reasons through your library to find the best matches."}
+          Fast offline scoring — matches your survey answers against game tags. No internet needed.
         </div>
       </div>
 
@@ -2558,12 +2518,15 @@ Return exactly 15 recommendations sorted by best match first. No preamble, no ma
         </div>
       </div>
 
-      <button onClick={() => setStep("survey")} disabled={selectedSystems.length === 0} style={{
-        background: selectedSystems.length > 0 ? "#ff6b35" : "#1a1a1a",
-        color: selectedSystems.length > 0 ? "#000" : "#444",
-        border: "none", padding: "12px 32px", cursor: selectedSystems.length > 0 ? "pointer" : "not-allowed",
-        fontFamily: "inherit", fontSize: 12, fontWeight: 900, letterSpacing: 2,
-      }}>
+      <button
+        onClick={() => { setAnswers({}); setCurrentQ(0); setStep("survey"); }}
+        disabled={selectedSystems.length === 0}
+        style={{
+          background: selectedSystems.length > 0 ? "#ff6b35" : "#1a1a1a",
+          color: selectedSystems.length > 0 ? "#000" : "#444",
+          border: "none", padding: "12px 32px", cursor: selectedSystems.length > 0 ? "pointer" : "not-allowed",
+          fontFamily: "inherit", fontSize: 12, fontWeight: 900, letterSpacing: 2,
+        }}>
         START SURVEY →
       </button>
     </div>
@@ -2590,13 +2553,22 @@ Return exactly 15 recommendations sorted by best match first. No preamble, no ma
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
           {q.options.map(opt => {
             const selected = q.type === "single" ? ans === opt : ans.includes(opt);
+            const tooltip = q.tooltips ? q.tooltips[opt] : null;
             return (
-              <button key={opt} onClick={() => handleAnswer(q.id, opt, q.type)} style={{
-                ...btnBase,
-                ...(selected ? { border: "1px solid #ff6b35", color: "#ff6b35", background: "rgba(255,107,53,0.1)", fontWeight: 900 } : {})
-              }}>
-                {opt}
-              </button>
+              <div key={opt} style={{ position: "relative" }} className="tooltip-wrap">
+                <button
+                  onClick={() => handleAnswer(q.id, opt, q.type)}
+                  title={tooltip || undefined}
+                  style={{
+                    ...btnBase,
+                    ...(selected ? { border: "1px solid #ff6b35", color: "#ff6b35", background: "rgba(255,107,53,0.1)", fontWeight: 900 } : {}),
+                    ...(tooltip ? { borderBottom: "1px dashed #ff6b35" } : {}),
+                  }}
+                >
+                  {opt}
+                  {tooltip && <span style={{ marginLeft: 5, fontSize: 10, color: "#ff6b35", opacity: 0.7 }}>?</span>}
+                </button>
+              </div>
             );
           })}
         </div>
@@ -2605,24 +2577,24 @@ Return exactly 15 recommendations sorted by best match first. No preamble, no ma
           {currentQ > 0 && (
             <button onClick={() => setCurrentQ(c => c - 1)} style={btnBase}>← BACK</button>
           )}
-          <button onClick={() => setStep("config")} style={btnBase}>✕ RESTART</button>
+          <button onClick={() => { setStep("config"); setAnswers({}); setCurrentQ(0); }} style={btnBase}>✕ RESTART</button>
           <div style={{ flex: 1 }} />
           {!isLast ? (
             <button onClick={() => setCurrentQ(c => c + 1)} style={{ ...btnActive, border: "1px solid #ff6b35" }}>
               NEXT →
             </button>
           ) : (
-            <button onClick={handleSubmit} disabled={aiLoading} style={{
-              background: "#ff6b35", color: "#000", border: "none",
-              padding: "10px 28px", cursor: "pointer", fontFamily: "inherit",
-              fontSize: 12, fontWeight: 900, letterSpacing: 2,
-              opacity: aiLoading ? 0.6 : 1,
-            }}>
-              {aiLoading ? "⟳ ANALYZING..." : "GET RECOMMENDATIONS →"}
+            <button
+              onClick={handleSubmit}
+              style={{
+                background: "#ff6b35", color: "#000", border: "none",
+                padding: "10px 28px", cursor: "pointer",
+                fontFamily: "inherit", fontSize: 12, fontWeight: 900, letterSpacing: 2,
+              }}>
+              GET RECOMMENDATIONS →
             </button>
           )}
         </div>
-        {aiError && <div style={{ marginTop: 12, color: "#ff4d4d", fontSize: 12 }}>{aiError}</div>}
       </div>
     );
   }
